@@ -14,10 +14,11 @@ public class TaskServiceImpl implements TaskService {
   private final TaskRepository taskRepository;
   private final ToDoListRepository toDoListRepository;
   private final ToDoListTaskRepository toDoListTaskRepository;
+  private static final String NOT_FOUND = "Task not found with id: ";
 
   @Override
   public Task saveTask(Task task, int listId) {
-    ToDoList list = toDoListRepository.findById(listId).orElseThrow(() -> new ItemNotFoundException("Task with id " + listId + " not found"));
+    ToDoList list = toDoListRepository.findById(listId).orElseThrow(() -> new ItemNotFoundException(NOT_FOUND + listId ));
     Task newTask = taskRepository.save(task);
     ToDoListTask toDoListTask = new ToDoListTask();
     toDoListTask.setList(list);
@@ -29,13 +30,13 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public Task getTaskById(int id) throws ItemNotFoundException {
     return taskRepository.findById(id)
-        .orElseThrow(() -> new ItemNotFoundException("Task with id " + id + " not found"));
+        .orElseThrow(() -> new ItemNotFoundException(NOT_FOUND + id ));
   }
 
   @Override
   public Task updateTaskById(int id, Task task) throws ItemNotFoundException {
     Task oldTask = taskRepository.findById(id)
-        .orElseThrow(() -> new ItemNotFoundException("Task with id " + id + " not found"));
+        .orElseThrow(() -> new ItemNotFoundException(NOT_FOUND + id ));
     oldTask.setName(task.getName());
     oldTask.setStatus(task.isStatus());
     return taskRepository.save(oldTask);
@@ -48,7 +49,7 @@ public class TaskServiceImpl implements TaskService {
       toDoListTaskRepository.deleteById(toDoListTask.getId());
       taskRepository.deleteById(id);
     }else{
-      throw new ItemNotFoundException("Task with id " + id + " not found");
+      throw new ItemNotFoundException(NOT_FOUND + id );
     }
 
   }
