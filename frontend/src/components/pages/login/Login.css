@@ -1,0 +1,13 @@
+.loginForm {
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+.form {
+  padding: 5vh;
+  min-width: 80vh;
+}
+.field{
+    padding-top:1vh;
+    padding-bottom:1vh;
+}

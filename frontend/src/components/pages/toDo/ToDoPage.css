@@ -1,0 +1,20 @@
+h1.MuiTypography-h5,
+h2.MuiTypography-h5,
+h1.MuiTypography-h3,
+span.MuiTypography-root {
+  font-family: monospace;
+}
+#taskContainer {
+  padding: 10vh;
+}
+#avatar {
+  background-color: #408793;
+}
+#logOutCard {
+  padding: 10px;
+  margin-bottom: 30px;
+  margin-right: 30px;
+}
+#toDo {
+  background: #fff;
+}

@@ -1,0 +1,23 @@
+.registrationContainer {
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+ .registrationForm {
+  padding-top: 1vh;
+  padding-left: 5vh;
+  padding-right: 5vh;
+  padding-bottom: 1vh;
+  min-width: 80vh;
+}
+.registrationField {
+  padding-top: 1vh;
+  padding-bottom: 1vh;
+}
+.registrationCard {
+  margin: 2vh;
+  padding:3vh;
+} 
+.title{
+  padding-bottom: 10vh;
+}
