@@ -50,6 +50,7 @@ const Registration = () => {
   };
 
   const handleSubmit = (
+<<<<<<< HEAD:frontend/src/components/pages/registration/Registration.tsx
     { username, password, email, lastName, firstName}: FormikValues  ) => {
       ApiService.post("/user", params)
       .then(() => {
@@ -59,6 +60,15 @@ const Registration = () => {
       .catch((error) => {
         displaySnackbarMessage(error.response.data, "error");
       });
+=======
+    username: string,
+    password: string,
+    email: string,
+    firstName: string,
+    lastName: string
+  ) => {
+    <div></div>;
+>>>>>>> featue/milena:frontend/src/components/pages/registration/RegistrationForm.tsx
   };
 
   const initialValues: FormModelRegistration = {
