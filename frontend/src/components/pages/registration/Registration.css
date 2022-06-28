@@ -9,6 +9,7 @@
   padding-right: 5vh;
   padding-bottom: 1vh;
   min-width: 80vh;
+  text-align: center;
 }
 .registrationField {
   padding-top: 1vh;
@@ -21,3 +22,4 @@
 .title{
   padding-bottom: 10vh;
 }
+

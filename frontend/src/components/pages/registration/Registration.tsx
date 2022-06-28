@@ -1,13 +1,9 @@
 import { AccountCircle, Visibility, VisibilityOff } from "@material-ui/icons";
 import EmailIcon from "@mui/icons-material/Email";
 import "./Registration.css";
-import MUICheckbox from "@material-ui/core/Checkbox";
-import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
-import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 import {
   Button,
   CircularProgress,
-  FormControlLabel,
   Grid,
   IconButton,
   InputAdornment,
@@ -17,11 +13,11 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import Divider from "../../atoms/Divider";
-import { Form, Formik } from "formik";
+import { Form, Formik, FormikValues } from "formik";
 import { FormModelRegistration } from "../../../Model";
-import Checkbox from "../../atoms/Checkbox";
 import { useNavigate } from "react-router-dom";
 import { RegistrationFormValidation } from "../../Validation";
+import { User } from "../../../models/User";
 
 interface State {
   password: string;
@@ -29,7 +25,8 @@ interface State {
   confirmedPassword: string;
   showConfirmedPassword: boolean;
 }
-const RegistrationForm = () => {
+const Registration = () => {
+  const newUser : User;
   const navigate = useNavigate();
   const [pwdValues, setPwdValues] = useState<State>({
     password: "",
@@ -53,13 +50,15 @@ const RegistrationForm = () => {
   };
 
   const handleSubmit = (
-    username: string,
-    password: string,
-    email: string,
-    firstName: string,
-    lastName: string
-  ) => {
-   <div></div>
+    { username, password, email, lastName, firstName}: FormikValues  ) => {
+      ApiService.post("/user", params)
+      .then(() => {
+        navigation("/login");
+        displaySnackbarMessage("Passwort wurde erfolgreich zurückgesetzt", "success")
+      })
+      .catch((error) => {
+        displaySnackbarMessage(error.response.data, "error");
+      });
   };
 
   const initialValues: FormModelRegistration = {
@@ -76,13 +75,7 @@ const RegistrationForm = () => {
       initialValues={initialValues}
       validationSchema={RegistrationFormValidation}
       onSubmit={(values) => {
-        handleSubmit(
-          values.username,
-          values.password,
-          values.email,
-          values.firstName,
-          values.lastName
-        );
+        handleSubmit(values);
       }}
     >
       {({
@@ -101,8 +94,8 @@ const RegistrationForm = () => {
               className={"registrationCard"}
             >
               <Grid item>
-                <Typography component="h1" variant="h3" color="primary">
-                  <b>Sign in</b>
+                <Typography component="h1" variant="h3" color="primary" textAlign={"center"}>
+                  <b>Sign up</b>
                 </Typography>
               </Grid>
               <div className={"registrationForm"}>
@@ -111,22 +104,16 @@ const RegistrationForm = () => {
                     <TextField
                       fullWidth
                       required
-                      id="outlined-basic"
                       label="First Name"
                       variant="outlined"
                       name={"firstName"}
                       value={values.firstName}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      helperText={
-                        errors.firstName && touched.firstName
-                          ? errors.firstName
-                          : null
-                      }
-                      error={
-                        errors.firstName && errors.firstName ? true : false
-                      }
-                    />
+                      helperText={errors.firstName && touched.firstName
+                        ? errors.firstName
+                        : null}
+                      error={errors.firstName && touched.firstName ? true : false} />
                   </Grid>
                   <Grid item className="registrationField" xs={12} md={6}>
                     <TextField
@@ -137,15 +124,12 @@ const RegistrationForm = () => {
                       variant="outlined"
                       name={"lastName"}
                       value={values.lastName}
-                      helperText={
-                        errors.lastName && touched.lastName
-                          ? errors.lastName
-                          : null
-                      }
+                      helperText={errors.lastName && touched.lastName
+                        ? errors.lastName
+                        : null}
                       error={errors.lastName && touched.lastName ? true : false}
                       onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
+                      onBlur={handleBlur} />
                   </Grid>
                 </Grid>
                 <Grid item className="registrationField" xs={12} md={12}>
@@ -164,19 +148,15 @@ const RegistrationForm = () => {
                     variant="outlined"
                     name={"email"}
                     value={values.email}
-                    helperText={
-                      errors.email && touched.email ? errors.email : null
-                    }
+                    helperText={errors.email && touched.email ? errors.email : null}
                     error={errors.email && touched.email ? true : false}
                     onChange={handleChange}
-                    onBlur={handleBlur}
-                  />
+                    onBlur={handleBlur} />
                 </Grid>
                 <Grid item className="registrationField" xs={12} md={12}>
                   <TextField
                     fullWidth
                     required
-                    id="outlined-basic"
                     label="Username"
                     InputProps={{
                       endAdornment: (
@@ -190,13 +170,10 @@ const RegistrationForm = () => {
                     value={values.username}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    helperText={
-                      errors.username && touched.username
-                        ? errors.username
-                        : null
-                    }
-                    error={errors.username && touched.username ? true : false}
-                  />
+                    helperText={errors.username && touched.username
+                      ? errors.username
+                      : null}
+                    error={errors.username && touched.username ? true : false} />
                 </Grid>
                 <Grid item className="registrationField" xs={12} md={12}>
                   <TextField
@@ -207,11 +184,9 @@ const RegistrationForm = () => {
                     value={values.password}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    helperText={
-                      errors.password && touched.password
-                        ? errors.password
-                        : null
-                    }
+                    helperText={errors.password && touched.password
+                      ? errors.password
+                      : null}
                     error={errors.password && touched.password ? true : false}
                     label="Password"
                     InputProps={{
@@ -230,8 +205,7 @@ const RegistrationForm = () => {
                         </IconButton>
                       ),
                     }}
-                    variant="outlined"
-                  />
+                    variant="outlined" />
                 </Grid>
                 <Grid item className="registrationField" xs={12} md={12}>
                   <TextField
@@ -242,16 +216,12 @@ const RegistrationForm = () => {
                     value={values.confirmedPassword}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    helperText={
-                      errors.confirmedPassword && touched.confirmedPassword
-                        ? errors.confirmedPassword
-                        : null
-                    }
-                    error={
-                      errors.confirmedPassword && touched.confirmedPassword
-                        ? true
-                        : false
-                    }
+                    helperText={errors.confirmedPassword && touched.confirmedPassword
+                      ? errors.confirmedPassword
+                      : null}
+                    error={errors.confirmedPassword && touched.confirmedPassword
+                      ? true
+                      : false}
                     label="Confirmed Password"
                     InputProps={{
                       endAdornment: (
@@ -269,8 +239,7 @@ const RegistrationForm = () => {
                         </IconButton>
                       ),
                     }}
-                    variant="outlined"
-                  />
+                    variant="outlined" />
                 </Grid>
                 <Grid item className="registrationField" xs={12} md={12}>
                   <Button
@@ -279,9 +248,7 @@ const RegistrationForm = () => {
                     color={"primary"}
                     fullWidth
                     disabled={isSubmitting}
-                    startIcon={
-                      isSubmitting ? <CircularProgress size={"0.9rem"} /> : null
-                    }
+                    startIcon={isSubmitting ? <CircularProgress size={"0.9rem"} /> : null}
                   >
                     create account
                   </Button>
@@ -292,8 +259,9 @@ const RegistrationForm = () => {
                     variant={"contained"}
                     color={"secondary"}
                     disabled={isSubmitting}
+                    onClick={() => navigate("/")}
                   >
-                    sign up
+                    sign in
                   </Button>
                 </Grid>
               </div>
@@ -304,4 +272,4 @@ const RegistrationForm = () => {
     </Formik>
   );
 };
-export default RegistrationForm;
+export default Registration;

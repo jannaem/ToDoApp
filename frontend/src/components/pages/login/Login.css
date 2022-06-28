@@ -6,6 +6,7 @@
 .form {
   padding: 5vh;
   min-width: 80vh;
+  text-align: center;
 }
 .field{
     padding-top:1vh;

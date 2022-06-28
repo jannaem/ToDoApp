@@ -30,9 +30,7 @@ public class TodoappApplication {
             userService.saveRole(new Role(1, "ROLE_USER"));
             userService.saveRole(new Role(2, "ROLE_ADMIN"));
             userService.saveUser(new User(1, "Milena", "Blaser", "blaser@gmail.com", "mblaser", "blaser123", new ArrayList<>()));
-            userService.addRoleToUser("mblaser", "ROLE_USER");
             userService.saveUser(new User(2, "Janna", "Esteban", "esteban@gmail.com", "jesteban", "esteban123", new ArrayList<>()));
-            userService.addRoleToUser("jesteban", "ROLE_USER");
         };
     }
 }

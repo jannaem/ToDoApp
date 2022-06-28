@@ -1,13 +1,17 @@
 import React from "react";
 import "./App.css";
+import { AuthenticationContextProvider } from "./contexts/AuthenticationContext";
+import { SnackbarContextProvider } from "./contexts/SnackbarContext";
 import Router from "./functional/Router";
 
 function App() {
   return (
     <React.StrictMode>
-      <div className="App">
-        <Router />
-      </div>
+      <SnackbarContextProvider>
+        <AuthenticationContextProvider>
+          <Router />
+        </AuthenticationContextProvider>
+      </SnackbarContextProvider>
     </React.StrictMode>
   );
 }
