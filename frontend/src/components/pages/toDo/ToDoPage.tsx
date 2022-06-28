@@ -27,6 +27,7 @@ import ToDoListService from "../../../services/ToDoListService";
 import TaskList from "../../atoms/TaskList/TaskList";
 import SearchField from "../../atoms/SearchField";
 import ToDoDTO from "../../../models/ToDoDTO";
+import AddButton from "../../atoms/AddButton/AddButton";
 const ToDoPage = () => {
   const [toDo, setToDo] = useState<ToDo>();
   const [selectedToDo, setSelectedToDo] = useState<ToDo>({
@@ -40,11 +41,6 @@ const ToDoPage = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [lists, setLists] = useState<ToDo[]>([]);
   const userId = "3";
-  const newToDo: ToDoDTO = {
-    id: "",
-    name: "",
-    tasks: [],
-  };
 
   const getTasks = (listId: string) => {
     ToDoListService.getToDoList(listId).then((res) => {
@@ -171,13 +167,13 @@ const ToDoPage = () => {
           startIcon={<PlaylistAddIcon />}
           onClick={handleFormDialog}
         >
-          add to do list
+          Add ToDo list
         </Button>
         <DialogForm
           open={openFormDialog}
-          title={"Add to do list"}
-          text={"Write the name done of your to do list"}
-          label={"Name of to do list"}
+          title={"Add ToDo List"}
+          text={"Enter the name of your new ToDo List"}
+          label={"Name of ToDo List"}
           handleDialog={handleFormDialog}
           userId={userId}
         />
@@ -226,6 +222,7 @@ const ToDoPage = () => {
                 }}
               ></TaskList>
             </Grid>
+            <AddButton></AddButton>
           </Grid>
         </Grid>
       </Grid>
