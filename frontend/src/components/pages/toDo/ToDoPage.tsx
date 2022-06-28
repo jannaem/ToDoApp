@@ -7,33 +7,91 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
-  TextField,
   Typography,
 } from "@material-ui/core";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import { ListItemButton } from "@mui/material";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Button from "@mui/material/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DialogForm from "../../atoms/DialogForm";
 import { ToDo } from "../../../models/ToDo";
 import ToDoList from "../../atoms/ToDoList/ToDoList";
 import "./ToDoPage.css";
+import Task from "../../../models/Task";
+import JoyrideContent from "../../atoms/JoyrideContent";
+import ToDoListService from "../../../services/ToDoListService";
+import TaskList from "../../atoms/TaskList/TaskList";
+import SearchField from "../../atoms/SearchField";
+import ToDoDTO from "../../../models/ToDoDTO";
 const ToDoPage = () => {
   const [toDo, setToDo] = useState<ToDo>();
   const [selectedToDo, setSelectedToDo] = useState<ToDo>({
     id: 1,
     name: "test",
   });
+  const [selectedTask, setSelectedTask] = useState<Task>();
   const [deleteModus, setDeleteModus] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [openFormDialog, setOpenFormDialog] = useState<boolean>(false);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [lists, setLists] = useState<ToDo[]>([]);
+  const userId = "3";
+  const newToDo: ToDoDTO = {
+    id: "",
+    name: "",
+    tasks: [],
+  };
+
+  const getTasks = (listId: string) => {
+    ToDoListService.getToDoList(listId).then((res) => {
+      setTasks(res.tasks);
+    });
+  };
+  const getLists = (userId: string) => {
+    ToDoListService.getAllLists(userId).then((res) => {
+      setLists(res);
+    });
+  };
+  useEffect(() => {
+    getTasks(selectedToDo.id.toString());
+    console.log(tasks);
+  }, [selectedToDo]);
+
+  useEffect(() => {
+    getLists(userId);
+    console.log(lists);
+  }, [userId]);
+
+  const steps = [
+    {
+      target: "#userDetailsSheet",
+      content: <JoyrideContent title={"Step 1"} body={" "} />,
+      placement: "auto",
+      disableBeacon: true,
+    },
+    {
+      target: "#userGroupsTable",
+      content: <JoyrideContent title={"Step 2"} body={" "} />,
+      placement: "auto",
+      disableBeacon: true,
+    },
+    {
+      target: "#userCoursesTable",
+      content: <JoyrideContent title={"Step 3"} body={" "} />,
+      placement: "auto",
+      disableBeacon: true,
+    },
+    {
+      target: "#tableSearchField",
+      content: <JoyrideContent title={"Step 4"} body={" "} />,
+      placement: "auto",
+      disableBeacon: true,
+    },
+  ];
   const handleDeleteButton = () => {
     setDeleteModus(!deleteModus);
   };
@@ -66,7 +124,6 @@ const ToDoPage = () => {
               </ListItem>
             </ListItem>
           </Card>
-
           <ListItem
             secondaryAction={
               deleteModus === false ? (
@@ -90,19 +147,12 @@ const ToDoPage = () => {
             }
           >
             <Typography component="h2" variant="h5" className={"text"}>
-              To do lists
+              ToDo Lists
             </Typography>
           </ListItem>
         </List>
         <ToDoList
-          toDos={[
-            { id: 1, name: "sadf" },
-            { id: 2, name: "sadf" },
-            { id: 3, name: "sadf" },
-            { id: 4, name: "sadf" },
-            { id: 5, name: "sadf" },
-            { id: 6, name: "sadf" },
-          ]}
+          toDos={lists}
           deleteModus={deleteModus}
           handleDialog={handleDialog}
           setDeleteToDo={(deleteTD: ToDo) => {
@@ -129,16 +179,12 @@ const ToDoPage = () => {
           text={"Write the name done of your to do list"}
           label={"Name of to do list"}
           handleDialog={handleFormDialog}
+          userId={userId}
         />
       </Grid>
-      <Grid
-        item
-        md={7}
-        xs={12}
-        direction={"column"}
-        id={"toDo"}
-      >
+      <Grid item md={7} xs={12} direction={"column"} id={"toDo"}>
         <Grid container direction="row" id={"taskContainer"}>
+          <Grid container></Grid>
           <Grid item md={8}>
             <Typography
               component="h1"
@@ -146,11 +192,40 @@ const ToDoPage = () => {
               variant="h3"
               className={"text"}
             >
-              Todo
+              Todo{" "}
             </Typography>
           </Grid>
-          <Grid item md={3}>
-           
+          <Grid item md={4}>
+            <SearchField
+              id={""}
+              variant={"standard"}
+              type={""}
+              placeholder={"Enter task name..."}
+              margin={"none"}
+              label={""}
+              disabled={false}
+              name={""}
+              searchTerm={""}
+              setSearchTerm={function (string: string): void {
+                throw new Error("Function not implemented.");
+              }}
+            ></SearchField>
+          </Grid>
+          <Grid item md={3}></Grid>{" "}
+          <Grid container>
+            <Grid item md={12} xs={12}>
+              <TaskList
+                tasks={tasks}
+                deleteModus={deleteModus}
+                handleDialog={handleDialog}
+                setDeleteToDo={(deleteTD: Task) => {
+                  setToDo(deleteTD);
+                }}
+                setSelectedToDo={(selectedTD: Task) => {
+                  setSelectedToDo(selectedTD);
+                }}
+              ></TaskList>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>

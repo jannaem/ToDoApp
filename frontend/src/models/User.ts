@@ -1,8 +1,11 @@
+import Roles from "./Roles";
+
 export interface User{
-    user_id: number;
+    id?: number;
     firstName: string;
     lastName: string;
     email:string;
     username: string;
     password: string;
+    roles: Roles[];
   }
