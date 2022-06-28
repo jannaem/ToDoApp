@@ -6,6 +6,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import "./CheckboxStyle.css";
 
 interface CheckBoxProps {
   text: string;
@@ -13,7 +14,7 @@ interface CheckBoxProps {
 }
 const Checkbox = ({ text, status }: CheckBoxProps) => {
   return (
-    <Card>
+    <Card id="card" variant="outlined">
       <CardContent>
         <FormControlLabel
           control={

@@ -7,15 +7,11 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
-  TextField,
   Typography,
 } from "@material-ui/core";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import { ListItemButton } from "@mui/material";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -25,22 +21,30 @@ import DialogForm from "../../atoms/DialogForm";
 import { ToDo } from "../../../models/ToDo";
 import ToDoList from "../../atoms/ToDoList/ToDoList";
 import "./ToDoPage.css";
-import Checkbox from "../../atoms/Checkbox";
 import Task from "../../../models/Task";
 import JoyrideContent from "../../atoms/JoyrideContent";
 import ToDoListService from "../../../services/ToDoListService";
+import TaskList from "../../atoms/TaskList/TaskList";
+import SearchField from "../../atoms/SearchField";
+import ToDoDTO from "../../../models/ToDoDTO";
 const ToDoPage = () => {
   const [toDo, setToDo] = useState<ToDo>();
   const [selectedToDo, setSelectedToDo] = useState<ToDo>({
     id: 1,
     name: "test",
   });
+  const [selectedTask, setSelectedTask] = useState<Task>();
   const [deleteModus, setDeleteModus] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [openFormDialog, setOpenFormDialog] = useState<boolean>(false);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [lists, setLists] = useState<ToDo[]>([]);
   const userId = "3";
+  const newToDo: ToDoDTO = {
+    id: "",
+    name: "",
+    tasks: [],
+  };
 
   const getTasks = (listId: string) => {
     ToDoListService.getToDoList(listId).then((res) => {
@@ -175,10 +179,12 @@ const ToDoPage = () => {
           text={"Write the name done of your to do list"}
           label={"Name of to do list"}
           handleDialog={handleFormDialog}
+          userId={userId}
         />
       </Grid>
       <Grid item md={7} xs={12} direction={"column"} id={"toDo"}>
         <Grid container direction="row" id={"taskContainer"}>
+          <Grid container></Grid>
           <Grid item md={8}>
             <Typography
               component="h1"
@@ -189,18 +195,39 @@ const ToDoPage = () => {
               Todo{" "}
             </Typography>
           </Grid>
+          <Grid item md={4}>
+            <SearchField
+              id={""}
+              variant={"standard"}
+              type={""}
+              placeholder={"Enter task name..."}
+              margin={"none"}
+              label={""}
+              disabled={false}
+              name={""}
+              searchTerm={""}
+              setSearchTerm={function (string: string): void {
+                throw new Error("Function not implemented.");
+              }}
+            ></SearchField>
+          </Grid>
           <Grid item md={3}></Grid>{" "}
-          <Grid item md={8}>
-            <>
-              {console.log(tasks)}
-              {tasks &&
-                tasks.forEach((task) => {
-                  <Checkbox text={task.name} status={task.status}></Checkbox>;
-                })}
-            </>
+          <Grid container>
+            <Grid item md={12} xs={12}>
+              <TaskList
+                tasks={tasks}
+                deleteModus={deleteModus}
+                handleDialog={handleDialog}
+                setDeleteToDo={(deleteTD: Task) => {
+                  setToDo(deleteTD);
+                }}
+                setSelectedToDo={(selectedTD: Task) => {
+                  setSelectedToDo(selectedTD);
+                }}
+              ></TaskList>
+            </Grid>
           </Grid>
         </Grid>
-        {" test"}
       </Grid>
       <Dialog open={open} onClose={handleDialog}>
         <DialogTitle>{"Confirm delete"}</DialogTitle>
@@ -228,7 +255,6 @@ const ToDoPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      <Checkbox text="test"></Checkbox>
     </Grid>
   );
 };
