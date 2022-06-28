@@ -5,21 +5,30 @@ import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControlLabel from "@mui/material/FormControlLabel";
 
-interface CheckBoxProps{
+interface CheckBoxProps {
   text: string;
+  status?: boolean;
 }
-const Checkbox = ({text}:CheckBoxProps) => {
+const Checkbox = ({ text, status }: CheckBoxProps) => {
   return (
     <Card>
       <CardContent>
-      <FormControlLabel control={ <MUICheckbox
-          icon={<CircleUnchecked />}
-          checkedIcon={<CircleCheckedFilled />}
-        />} label={ <Typography variant="h6" component="div">
-        {text}
-      </Typography>} />
+        <FormControlLabel
+          control={
+            <MUICheckbox
+              defaultChecked={status}
+              icon={<CircleUnchecked />}
+              checkedIcon={<CircleCheckedFilled />}
+            />
+          }
+          label={
+            <Typography variant="h6" component="div">
+              {text}
+            </Typography>
+          }
+        />
       </CardContent>
     </Card>
   );

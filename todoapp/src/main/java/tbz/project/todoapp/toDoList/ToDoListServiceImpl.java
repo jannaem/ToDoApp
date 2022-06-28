@@ -51,4 +51,9 @@ public class ToDoListServiceImpl implements ToDoListService {
     toDoListRepository.deleteById(id);
     return null;
   }
+
+  @Override
+  public List<ToDoList> getListByUserId(int id) {
+    return toDoListRepository.findByUserId(id);
+  }
 }

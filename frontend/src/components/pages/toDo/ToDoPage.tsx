@@ -20,11 +20,15 @@ import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Button from "@mui/material/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DialogForm from "../../atoms/DialogForm";
 import { ToDo } from "../../../models/ToDo";
 import ToDoList from "../../atoms/ToDoList/ToDoList";
 import "./ToDoPage.css";
+import Checkbox from "../../atoms/Checkbox";
+import Task from "../../../models/Task";
+import JoyrideContent from "../../atoms/JoyrideContent";
+import ToDoListService from "../../../services/ToDoListService";
 const ToDoPage = () => {
   const [toDo, setToDo] = useState<ToDo>();
   const [selectedToDo, setSelectedToDo] = useState<ToDo>({
@@ -34,6 +38,56 @@ const ToDoPage = () => {
   const [deleteModus, setDeleteModus] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [openFormDialog, setOpenFormDialog] = useState<boolean>(false);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [lists, setLists] = useState<ToDo[]>([]);
+  const userId = "3";
+
+  const getTasks = (listId: string) => {
+    ToDoListService.getToDoList(listId).then((res) => {
+      setTasks(res.tasks);
+    });
+  };
+  const getLists = (userId: string) => {
+    ToDoListService.getAllLists(userId).then((res) => {
+      setLists(res);
+    });
+  };
+  useEffect(() => {
+    getTasks(selectedToDo.id.toString());
+    console.log(tasks);
+  }, [selectedToDo]);
+
+  useEffect(() => {
+    getLists(userId);
+    console.log(lists);
+  }, [userId]);
+
+  const steps = [
+    {
+      target: "#userDetailsSheet",
+      content: <JoyrideContent title={"Step 1"} body={" "} />,
+      placement: "auto",
+      disableBeacon: true,
+    },
+    {
+      target: "#userGroupsTable",
+      content: <JoyrideContent title={"Step 2"} body={" "} />,
+      placement: "auto",
+      disableBeacon: true,
+    },
+    {
+      target: "#userCoursesTable",
+      content: <JoyrideContent title={"Step 3"} body={" "} />,
+      placement: "auto",
+      disableBeacon: true,
+    },
+    {
+      target: "#tableSearchField",
+      content: <JoyrideContent title={"Step 4"} body={" "} />,
+      placement: "auto",
+      disableBeacon: true,
+    },
+  ];
   const handleDeleteButton = () => {
     setDeleteModus(!deleteModus);
   };
@@ -66,7 +120,6 @@ const ToDoPage = () => {
               </ListItem>
             </ListItem>
           </Card>
-
           <ListItem
             secondaryAction={
               deleteModus === false ? (
@@ -90,19 +143,12 @@ const ToDoPage = () => {
             }
           >
             <Typography component="h2" variant="h5" className={"text"}>
-              To do lists
+              ToDo Lists
             </Typography>
           </ListItem>
         </List>
         <ToDoList
-          toDos={[
-            { id: 1, name: "sadf" },
-            { id: 2, name: "sadf" },
-            { id: 3, name: "sadf" },
-            { id: 4, name: "sadf" },
-            { id: 5, name: "sadf" },
-            { id: 6, name: "sadf" },
-          ]}
+          toDos={lists}
           deleteModus={deleteModus}
           handleDialog={handleDialog}
           setDeleteToDo={(deleteTD: ToDo) => {
@@ -131,13 +177,7 @@ const ToDoPage = () => {
           handleDialog={handleFormDialog}
         />
       </Grid>
-      <Grid
-        item
-        md={7}
-        xs={12}
-        direction={"column"}
-        id={"toDo"}
-      >
+      <Grid item md={7} xs={12} direction={"column"} id={"toDo"}>
         <Grid container direction="row" id={"taskContainer"}>
           <Grid item md={8}>
             <Typography
@@ -146,13 +186,21 @@ const ToDoPage = () => {
               variant="h3"
               className={"text"}
             >
-              Todo
+              Todo{" "}
             </Typography>
           </Grid>
-          <Grid item md={3}>
-           
+          <Grid item md={3}></Grid>{" "}
+          <Grid item md={8}>
+            <>
+              {console.log(tasks)}
+              {tasks &&
+                tasks.forEach((task) => {
+                  <Checkbox text={task.name} status={task.status}></Checkbox>;
+                })}
+            </>
           </Grid>
         </Grid>
+        {" test"}
       </Grid>
       <Dialog open={open} onClose={handleDialog}>
         <DialogTitle>{"Confirm delete"}</DialogTitle>
@@ -180,6 +228,7 @@ const ToDoPage = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Checkbox text="test"></Checkbox>
     </Grid>
   );
 };
