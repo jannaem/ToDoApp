@@ -31,9 +31,12 @@ const DialogForm = ({
   const createToDoList = (userId: string, name: string) => {
     const newToDoList: ToDoDTO = {
       id: "",
-      name: "",
+      name: name,
       tasks: [],
     };
+    ToDoListService.createToDoList(userId, newToDoList)
+      .then(() => handleDialog())
+      .catch();
   };
   const validationSchema = () => {
     Yup.object().shape({ name: Yup.string().trim().required() });
@@ -45,7 +48,7 @@ const DialogForm = ({
       validationSchema={validationSchema}
       initialValues={{ name: "" }}
     >
-      {(values) => {
+      {({ values, handleChange }) => {
         return (
           <Form method="post">
             <Dialog open={open} onClose={handleDialog}>
@@ -60,6 +63,7 @@ const DialogForm = ({
                   fullWidth
                   variant="standard"
                   id="name"
+                  onChange={handleChange}
                 />
               </DialogContent>
               <DialogActions>
@@ -67,7 +71,7 @@ const DialogForm = ({
                   Cancel
                 </Button>
                 <Button
-                  onClick={createToDoList(userId, values.name)}
+                  onClick={() => createToDoList(userId, values.name)}
                   variant="contained"
                 >
                   Add

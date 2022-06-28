@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * This is the configuration file used to allow all origins. The paath of the origin
+ * This is the configuration file used to allow all origins. The path of the origin
  * needs to get changed when deployment is done
  */
 @Configuration
