@@ -8,9 +8,9 @@ import {
   TextField,
 } from "@material-ui/core";
 import { Form, Formik, yupToFormErrors } from "formik";
-import ToDoDTO from "../../models/ToDoDTO";
-import ToDoListService from "../../services/ToDoListService";
 import * as Yup from "yup";
+import Task from "../../../models/Task";
+import TaskService from "../../../services/TaskService";
 
 interface DialogProps {
   title: string;
@@ -18,23 +18,23 @@ interface DialogProps {
   label: string;
   handleDialog: () => void;
   open: boolean;
-  userId: string;
+  listId: string;
 }
-const DialogForm = ({
+const TaskDialog = ({
   title,
   text,
   label,
   open,
   handleDialog,
-  userId,
+  listId,
 }: DialogProps) => {
-  const createToDoList = (userId: string, name: string) => {
-    const newToDoList: ToDoDTO = {
+  const createTask = (listId: string, name: string) => {
+    const newTask: Task = {
       id: "",
       name: name,
-      tasks: [],
+      status: false,
     };
-    ToDoListService.createToDoList(userId, newToDoList)
+    TaskService.createTask(listId, newTask)
       .then(() => handleDialog())
       .catch();
   };
@@ -67,11 +67,11 @@ const DialogForm = ({
                 />
               </DialogContent>
               <DialogActions>
-                <Button onClick={handleDialog} variant="outlined">
+                <Button onClick={() => handleDialog()} variant="outlined">
                   Cancel
                 </Button>
                 <Button
-                  onClick={() => createToDoList(userId, values.name)}
+                  onClick={() => createTask(listId, values.name)}
                   variant="contained"
                 >
                   Add
@@ -84,4 +84,4 @@ const DialogForm = ({
     </Formik>
   );
 };
-export default DialogForm;
+export default TaskDialog;

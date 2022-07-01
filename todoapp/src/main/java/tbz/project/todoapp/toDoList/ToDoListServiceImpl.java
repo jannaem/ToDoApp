@@ -46,9 +46,14 @@ public class ToDoListServiceImpl implements ToDoListService {
   public Void deleteById(int id) {
     List<Task> tasks = taskRepository.findByListId(id);
     for(Task task : tasks) {
-      taskService.deleteTaskById(task.getTaskId());
+      taskService.deleteTaskById(task.getId());
     }
     toDoListRepository.deleteById(id);
     return null;
+  }
+
+  @Override
+  public List<ToDoList> getListByUserId(int id) {
+    return toDoListRepository.findByUserId(id);
   }
 }

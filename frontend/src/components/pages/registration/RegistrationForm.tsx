@@ -1,9 +1,6 @@
 import { AccountCircle, Visibility, VisibilityOff } from "@material-ui/icons";
 import EmailIcon from "@mui/icons-material/Email";
 import "./Registration.css";
-import MUICheckbox from "@material-ui/core/Checkbox";
-import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
-import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
 import {
   Button,
   CircularProgress,
@@ -19,7 +16,6 @@ import React, { useState } from "react";
 import Divider from "../../atoms/Divider";
 import { Form, Formik } from "formik";
 import { FormModelRegistration } from "../../../Model";
-import Checkbox from "../../atoms/Checkbox";
 import { useNavigate } from "react-router-dom";
 import { RegistrationFormValidation } from "../../Validation";
 
@@ -59,7 +55,7 @@ const RegistrationForm = () => {
     firstName: string,
     lastName: string
   ) => {
-   <div></div>
+    <div></div>;
   };
 
   const initialValues: FormModelRegistration = {

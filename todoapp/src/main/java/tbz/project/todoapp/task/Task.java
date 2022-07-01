@@ -20,7 +20,7 @@ import lombok.Setter;
 public class Task {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private int taskId;
+  private int id;
 
   private String name;
 

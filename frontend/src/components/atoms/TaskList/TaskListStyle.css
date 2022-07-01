@@ -1,0 +1,18 @@
+.task {
+  border: 10px solid #fff;
+  border-radius: 1px;
+  font-family: monospace;
+  margin-top: 4rem;
+}
+
+#tasklist {
+  max-height: 66vh;
+  min-height: 66vh;
+  overflow: auto;
+  font-family: monospace;
+  margin-left: -2rem;
+}
+.MuiTypography-root {
+  font-family: monospace;
+  font-weight: 300;
+}

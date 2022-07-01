@@ -7,33 +7,53 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
-  TextField,
   Typography,
 } from "@material-ui/core";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import { ListItemButton } from "@mui/material";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Button from "@mui/material/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DialogForm from "../../atoms/DialogForm";
 import { ToDo } from "../../../models/ToDo";
 import ToDoList from "../../atoms/ToDoList/ToDoList";
 import "./ToDoPage.css";
+import Task from "../../../models/Task";
+import JoyrideContent from "../../atoms/JoyrideContent";
+import ToDoListService from "../../../services/ToDoListService";
+import TaskList from "../../atoms/TaskList/TaskList";
+import SearchField from "../../atoms/SearchField";
+import AddButton from "../../atoms/AddButton/AddButton";
+import TaskDialog from "../../atoms/TaskDialog/TaskDialog";
 const ToDoPage = () => {
   const [toDo, setToDo] = useState<ToDo>();
+  const [lists, setLists] = useState<ToDo[]>([]);
   const [selectedToDo, setSelectedToDo] = useState<ToDo>({
-    id: 1,
+    id: "1",
     name: "test",
   });
+  const [taskDeleted, setTaskDeleted] = useState<boolean>(false);
   const [deleteModus, setDeleteModus] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [openFormDialog, setOpenFormDialog] = useState<boolean>(false);
+  const [openTaskDialog, setTaskDialog] = useState<boolean>(false);
+  const [tasks, setTasks] = useState<Task[]>([]);
+
+  const userId = "3";
+  const getLists = (userId: string) => {
+    ToDoListService.getAllLists(userId).then((res) => {
+      setLists(res);
+    });
+  };
+  const getTasks = (listId: string) => {
+    ToDoListService.getToDoList(listId).then((res) => {
+      setTasks(res.tasks);
+    });
+  };
+
   const handleDeleteButton = () => {
     setDeleteModus(!deleteModus);
   };
@@ -43,6 +63,47 @@ const ToDoPage = () => {
   const handleFormDialog = () => {
     setOpenFormDialog(!openFormDialog);
   };
+  const handleTaskDialog = () => {
+    setTaskDialog(!openTaskDialog);
+  };
+
+  useEffect(() => {
+    if (selectedToDo.id !== "1") {
+      getTasks(selectedToDo.id.toString());
+    }
+  }, [selectedToDo, openTaskDialog]);
+
+  useEffect(() => {
+    getLists(userId);
+  }, [userId, openFormDialog, open, taskDeleted]);
+
+  const steps = [
+    {
+      target: "#userDetailsSheet",
+      content: <JoyrideContent title={"Step 1"} body={" "} />,
+      placement: "auto",
+      disableBeacon: true,
+    },
+    {
+      target: "#userGroupsTable",
+      content: <JoyrideContent title={"Step 2"} body={" "} />,
+      placement: "auto",
+      disableBeacon: true,
+    },
+    {
+      target: "#userCoursesTable",
+      content: <JoyrideContent title={"Step 3"} body={" "} />,
+      placement: "auto",
+      disableBeacon: true,
+    },
+    {
+      target: "#tableSearchField",
+      content: <JoyrideContent title={"Step 4"} body={" "} />,
+      placement: "auto",
+      disableBeacon: true,
+    },
+  ];
+
   return (
     <Grid container>
       <Grid item md={5} xs={12} direction={"column"}>
@@ -66,7 +127,6 @@ const ToDoPage = () => {
               </ListItem>
             </ListItem>
           </Card>
-
           <ListItem
             secondaryAction={
               deleteModus === false ? (
@@ -90,19 +150,12 @@ const ToDoPage = () => {
             }
           >
             <Typography component="h2" variant="h5" className={"text"}>
-              To do lists
+              ToDo Lists
             </Typography>
           </ListItem>
         </List>
         <ToDoList
-          toDos={[
-            { id: 1, name: "sadf" },
-            { id: 2, name: "sadf" },
-            { id: 3, name: "sadf" },
-            { id: 4, name: "sadf" },
-            { id: 5, name: "sadf" },
-            { id: 6, name: "sadf" },
-          ]}
+          toDos={lists}
           deleteModus={deleteModus}
           handleDialog={handleDialog}
           setDeleteToDo={(deleteTD: ToDo) => {
@@ -121,24 +174,20 @@ const ToDoPage = () => {
           startIcon={<PlaylistAddIcon />}
           onClick={handleFormDialog}
         >
-          add to do list
+          Add ToDo list
         </Button>
         <DialogForm
           open={openFormDialog}
-          title={"Add to do list"}
-          text={"Write the name done of your to do list"}
-          label={"Name of to do list"}
+          title={"Add ToDo List"}
+          text={"Enter the name of your new ToDo List"}
+          label={"Name"}
           handleDialog={handleFormDialog}
+          userId={userId}
         />
       </Grid>
-      <Grid
-        item
-        md={7}
-        xs={12}
-        direction={"column"}
-        id={"toDo"}
-      >
+      <Grid item md={7} xs={12} direction={"column"} id={"toDo"}>
         <Grid container direction="row" id={"taskContainer"}>
+          <Grid container></Grid>
           <Grid item md={8}>
             <Typography
               component="h1"
@@ -146,14 +195,51 @@ const ToDoPage = () => {
               variant="h3"
               className={"text"}
             >
-              Todo
+              Todo{" "}
             </Typography>
           </Grid>
-          <Grid item md={3}>
-           
+          <Grid item md={4}>
+            <SearchField
+              id={""}
+              variant={"standard"}
+              type={""}
+              placeholder={"Enter task name..."}
+              margin={"none"}
+              label={""}
+              disabled={false}
+              name={""}
+              searchTerm={""}
+              setSearchTerm={function (string: string): void {
+                throw new Error("Function not implemented.");
+              }}
+            ></SearchField>
+          </Grid>
+          <Grid item md={3}></Grid>{" "}
+          <Grid container>
+            <Grid item md={12} xs={12}>
+              <TaskList
+                tasks={tasks}
+                handleDialog={handleDialog}
+                taskDeleted={taskDeleted}
+                setTaskDeleted={setTaskDeleted}
+              ></TaskList>
+            </Grid>
+            {lists.includes(selectedToDo) && (
+              <AddButton
+                onClick={() => setTaskDialog(!openTaskDialog)}
+              ></AddButton>
+            )}
           </Grid>
         </Grid>
       </Grid>
+      <TaskDialog
+        open={openTaskDialog}
+        title={"Add Task to ToDo List"}
+        text={"Enter the name of your new Task"}
+        label={"Name  "}
+        handleDialog={handleTaskDialog}
+        listId={selectedToDo.id}
+      ></TaskDialog>
       <Dialog open={open} onClose={handleDialog}>
         <DialogTitle>{"Confirm delete"}</DialogTitle>
         <DialogContent>
