@@ -66,7 +66,13 @@ const ToDoPage = () => {
   const handleTaskDialog = () => {
     setTaskDialog(!openTaskDialog);
   };
-
+  useEffect(() => {
+    console.log(lists.length);
+    if (lists.length > 0) {
+      setSelectedToDo(lists[0]);
+      getTasks(lists[0].id);
+    }
+  }, [lists]);
   useEffect(() => {
     if (selectedToDo.id !== "1") {
       getTasks(selectedToDo.id.toString());
