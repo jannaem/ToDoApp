@@ -26,41 +26,56 @@ import JoyrideContent from "../../atoms/JoyrideContent";
 import ToDoListService from "../../../services/ToDoListService";
 import TaskList from "../../atoms/TaskList/TaskList";
 import SearchField from "../../atoms/SearchField";
-import ToDoDTO from "../../../models/ToDoDTO";
 import AddButton from "../../atoms/AddButton/AddButton";
+import TaskDialog from "../../atoms/TaskDialog/TaskDialog";
 const ToDoPage = () => {
   const [toDo, setToDo] = useState<ToDo>();
+  const [lists, setLists] = useState<ToDo[]>([]);
   const [selectedToDo, setSelectedToDo] = useState<ToDo>({
-    id: 1,
+    id: "1",
     name: "test",
   });
-  const [selectedTask, setSelectedTask] = useState<Task>();
+  const [taskDeleted, setTaskDeleted] = useState<boolean>(false);
   const [deleteModus, setDeleteModus] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [openFormDialog, setOpenFormDialog] = useState<boolean>(false);
+  const [openTaskDialog, setTaskDialog] = useState<boolean>(false);
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [lists, setLists] = useState<ToDo[]>([]);
-  const userId = "3";
 
-  const getTasks = (listId: string) => {
-    ToDoListService.getToDoList(listId).then((res) => {
-      setTasks(res.tasks);
-    });
-  };
+  const userId = "3";
   const getLists = (userId: string) => {
     ToDoListService.getAllLists(userId).then((res) => {
       setLists(res);
     });
   };
+  const getTasks = (listId: string) => {
+    ToDoListService.getToDoList(listId).then((res) => {
+      setTasks(res.tasks);
+    });
+  };
+
+  const handleDeleteButton = () => {
+    setDeleteModus(!deleteModus);
+  };
+  const handleDialog = () => {
+    setOpen(!open);
+  };
+  const handleFormDialog = () => {
+    setOpenFormDialog(!openFormDialog);
+  };
+  const handleTaskDialog = () => {
+    setTaskDialog(!openTaskDialog);
+  };
+
   useEffect(() => {
-    getTasks(selectedToDo.id.toString());
-    console.log(tasks);
-  }, [selectedToDo]);
+    if (selectedToDo.id !== "1") {
+      getTasks(selectedToDo.id.toString());
+    }
+  }, [selectedToDo, openTaskDialog]);
 
   useEffect(() => {
     getLists(userId);
-    console.log(lists);
-  }, [userId]);
+  }, [userId, openFormDialog, open, taskDeleted]);
 
   const steps = [
     {
@@ -88,15 +103,7 @@ const ToDoPage = () => {
       disableBeacon: true,
     },
   ];
-  const handleDeleteButton = () => {
-    setDeleteModus(!deleteModus);
-  };
-  const handleDialog = () => {
-    setOpen(!open);
-  };
-  const handleFormDialog = () => {
-    setOpenFormDialog(!openFormDialog);
-  };
+
   return (
     <Grid container>
       <Grid item md={5} xs={12} direction={"column"}>
@@ -173,7 +180,7 @@ const ToDoPage = () => {
           open={openFormDialog}
           title={"Add ToDo List"}
           text={"Enter the name of your new ToDo List"}
-          label={"Name of ToDo List"}
+          label={"Name"}
           handleDialog={handleFormDialog}
           userId={userId}
         />
@@ -212,20 +219,27 @@ const ToDoPage = () => {
             <Grid item md={12} xs={12}>
               <TaskList
                 tasks={tasks}
-                deleteModus={deleteModus}
                 handleDialog={handleDialog}
-                setDeleteToDo={(deleteTD: Task) => {
-                  setToDo(deleteTD);
-                }}
-                setSelectedToDo={(selectedTD: Task) => {
-                  setSelectedToDo(selectedTD);
-                }}
+                taskDeleted={taskDeleted}
+                setTaskDeleted={setTaskDeleted}
               ></TaskList>
             </Grid>
-            <AddButton></AddButton>
+            {lists.includes(selectedToDo) && (
+              <AddButton
+                onClick={() => setTaskDialog(!openTaskDialog)}
+              ></AddButton>
+            )}
           </Grid>
         </Grid>
       </Grid>
+      <TaskDialog
+        open={openTaskDialog}
+        title={"Add Task to ToDo List"}
+        text={"Enter the name of your new Task"}
+        label={"Name  "}
+        handleDialog={handleTaskDialog}
+        listId={selectedToDo.id}
+      ></TaskDialog>
       <Dialog open={open} onClose={handleDialog}>
         <DialogTitle>{"Confirm delete"}</DialogTitle>
         <DialogContent>

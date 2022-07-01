@@ -10,6 +10,7 @@
   min-height: 66vh;
   overflow: auto;
   font-family: monospace;
+  margin-left: -2rem;
 }
 .MuiTypography-root {
   font-family: monospace;
