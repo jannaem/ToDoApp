@@ -17,7 +17,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
-import DialogForm from "../../atoms/DialogForm";
+import AddListDialog from "../../atoms/AddListDialog";
 import { ToDo } from "../../../models/ToDo";
 import ToDoList from "../../atoms/ToDoList/ToDoList";
 import "./ToDoPage.css";
@@ -27,7 +27,7 @@ import ToDoListService from "../../../services/ToDoListService";
 import TaskList from "../../atoms/TaskList/TaskList";
 import SearchField from "../../atoms/SearchField";
 import AddButton from "../../atoms/AddButton/AddButton";
-import TaskDialog from "../../atoms/TaskDialog/TaskDialog";
+import AddTaskDialog from "../../atoms/TaskDialog/AddTaskDialog";
 const ToDoPage = () => {
   const [toDo, setToDo] = useState<ToDo>();
   const [lists, setLists] = useState<ToDo[]>([]);
@@ -182,10 +182,10 @@ const ToDoPage = () => {
         >
           Add ToDo list
         </Button>
-        <DialogForm
+        <AddListDialog
           open={openFormDialog}
           title={"Add ToDo List"}
-          text={"Enter the name of your new ToDo List"}
+          text={"Enter the name of your new list"}
           label={"Name"}
           handleDialog={handleFormDialog}
           userId={userId}
@@ -225,7 +225,6 @@ const ToDoPage = () => {
             <Grid item md={12} xs={12}>
               <TaskList
                 tasks={tasks}
-                handleDialog={handleDialog}
                 taskDeleted={taskDeleted}
                 setTaskDeleted={setTaskDeleted}
               ></TaskList>
@@ -238,14 +237,14 @@ const ToDoPage = () => {
           </Grid>
         </Grid>
       </Grid>
-      <TaskDialog
+      <AddTaskDialog
         open={openTaskDialog}
         title={"Add Task to ToDo List"}
         text={"Enter the name of your new Task"}
-        label={"Name  "}
+        label={"Name"}
         handleDialog={handleTaskDialog}
         listId={selectedToDo.id}
-      ></TaskDialog>
+      ></AddTaskDialog>
       <Dialog open={open} onClose={handleDialog}>
         <DialogTitle>{"Confirm delete"}</DialogTitle>
         <DialogContent>

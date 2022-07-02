@@ -39,7 +39,13 @@ const DialogForm = ({
       .catch();
   };
   const validationSchema = () => {
-    Yup.object().shape({ name: Yup.string().trim().required() });
+    Yup.object().shape({
+      name: Yup.string()
+        .trim()
+        .required()
+        .min(2, "The task name has to be at least 2 characters long")
+        .max(25, "test"),
+    });
   };
   return (
     <Formik
@@ -48,7 +54,7 @@ const DialogForm = ({
       validationSchema={validationSchema}
       initialValues={{ name: "" }}
     >
-      {({ values, handleChange }) => {
+      {({ values, handleChange, isValid, dirty }) => {
         return (
           <Form method="post">
             <Dialog open={open} onClose={handleDialog}>
@@ -73,6 +79,7 @@ const DialogForm = ({
                 <Button
                   onClick={() => createToDoList(userId, values.name)}
                   variant="contained"
+                  disabled={!isValid || !dirty}
                 >
                   Add
                 </Button>
