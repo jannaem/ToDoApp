@@ -8,10 +8,11 @@ import {
   TextField,
 } from "@material-ui/core";
 import { createTheme } from "@mui/material";
-import { Form, Formik, yupToFormErrors } from "formik";
+import { Form, Formik } from "formik";
 import * as Yup from "yup";
 import Task from "../../../models/Task";
 import TaskService from "../../../services/TaskService";
+import "./TaskDialog.css";
 
 interface DialogProps {
   title: string;
@@ -19,27 +20,32 @@ interface DialogProps {
   label: string;
   handleDialog: () => void;
   open: boolean;
-  listId: string;
+  task: Task;
+  taskUpdated: boolean;
+  setTaskUpdated: () => void;
 }
-const AddTaskDialog = ({
+const UpdateTaskDialog = ({
   title,
   text,
   label,
   open,
   handleDialog,
-  listId,
+  task,
+  taskUpdated,
+  setTaskUpdated,
 }: DialogProps) => {
-  const createTask = (listId: string, name: string) => {
-    const newTask: Task = {
-      id: "",
+  const updateTask = (task: Task, name: string) => {
+    const updatedTask: Task = {
+      id: task.id,
       name: name,
-      status: false,
+      status: task.status,
     };
-    TaskService.createTask(listId, newTask)
+    TaskService.updateTask(task.id, updatedTask)
       .then(() => handleDialog())
       .catch();
   };
   const classes = createTheme();
+  console.log(open, "open");
   const validationSchema = Yup.object().shape({
     name: Yup.string()
       .trim()
@@ -59,12 +65,9 @@ const AddTaskDialog = ({
         return (
           <Form method="post">
             <>
-              {console.log(!isValid, "!isValid")}
-              {console.log(!dirty, "dirty")}
-              {console.log(!isValid || !dirty, "valid & dirty")}
               <Dialog open={open} onClose={handleDialog}>
                 <DialogTitle>{title}</DialogTitle>
-                <DialogContent>
+                <DialogContent style={{ width: "30rem" }}>
                   <DialogContentText>{text}</DialogContentText>
                   <TextField
                     autoFocus
@@ -91,7 +94,8 @@ const AddTaskDialog = ({
                   </Button>
                   <Button
                     onClick={() => {
-                      createTask(listId, values.name);
+                      updateTask(task, values.name);
+                      setTaskUpdated();
                       resetForm();
                     }}
                     variant="contained"
@@ -108,4 +112,4 @@ const AddTaskDialog = ({
     </Formik>
   );
 };
-export default AddTaskDialog;
+export default UpdateTaskDialog;

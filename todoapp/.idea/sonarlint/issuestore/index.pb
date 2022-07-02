@@ -11,17 +11,5 @@ h
 8src/main/java/tbz/project/todoapp/toDoList/ToDoList.java,0\f\0fc58ff21a2ea9327f0d3ddb03e71a34ef64da03
 r
 Bsrc/main/java/tbz/project/todoapp/toDoList/ToDoListRepository.java,8\8\88010799b91a582d28ac7ade6f14e55da1269358
-r
-Bsrc/main/java/tbz/project/todoapp/toDoList/ToDoListController.java,7\1\71ce53072990cf56511c46d61eaf0b03080cc746
-o
-?src/main/java/tbz/project/todoapp/toDoList/ToDoListService.java,b\6\b6c37938835a68a62c65d5d9ce95d4afb7a0a75e
-s
-Csrc/main/java/tbz/project/todoapp/toDoList/ToDoListServiceImpl.java,d\a\daa55200ad378774128718fd575aac1f99565d48
-p
-@src/main/java/tbz/project/todoapp/toDoListTask/ToDoListTask.java,e\2\e2844c72a4004bdd43cb4c3e3320d7e4411b65d1
 z
 Jsrc/main/java/tbz/project/todoapp/toDoListTask/ToDoListTaskRepository.java,9\3\933e122f3509a72d29d217aa2fd9a4e3ffe29264
-j
-:src/main/java/tbz/project/todoapp/task/TaskController.java,2\d\2d0efdede286d097ca9d4fc789575c327985abd2
-j
-:src/main/java/tbz/project/todoapp/task/TaskRepository.java,1\8\18f7864d67891fcbb19f983c8a5438ab296ab2d5

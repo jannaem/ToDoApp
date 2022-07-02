@@ -27,7 +27,7 @@ const DeleteTaskDialog = ({
   return (
     <Dialog open={open} onClose={handleDialog}>
       <DialogTitle>{"Confirm delete"}</DialogTitle>
-      <DialogContent>
+      <DialogContent style={{ width: "30rem" }}>
         <DialogContentText>
           {"Are you sure you want to delete the to do list: "}
         </DialogContentText>
@@ -48,7 +48,6 @@ const DeleteTaskDialog = ({
           onClick={() => {
             setTaskDeleted();
             deleteAction();
-
             handleDialog();
           }}
           color={"secondary"}

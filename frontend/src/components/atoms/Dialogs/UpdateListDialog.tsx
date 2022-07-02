@@ -7,36 +7,40 @@ import {
   DialogTitle,
   TextField,
 } from "@material-ui/core";
-import { Form, Formik, yupToFormErrors } from "formik";
-import ToDoDTO from "../../models/ToDoDTO";
-import ToDoListService from "../../services/ToDoListService";
+import { Form, Formik } from "formik";
+import ToDo from "../../../models/ToDo";
+import ToDoListService from "../../../services/ToDoListService";
 import * as Yup from "yup";
+import ToDoDTO from "../../../models/ToDoDTO";
+import { useState } from "react";
 
 interface DialogProps {
   title: string;
   text: string;
   label: string;
-  handleDialog: () => void;
+  list: ToDo;
+  listUpdated: boolean;
+  setListUpdated: () => void;
+  setOpen: (open: boolean) => void;
   open: boolean;
-  userId: string;
 }
-const DialogForm = ({
+const UpdateListDialog = ({
   title,
   text,
   label,
+  list,
+  listUpdated,
+  setListUpdated,
+  setOpen,
   open,
-  handleDialog,
-  userId,
 }: DialogProps) => {
-  const createToDoList = (userId: string, name: string) => {
-    const newToDoList: ToDoDTO = {
-      id: "",
+  const updateToDoList = (name: string) => {
+    const updatedToDoList: ToDoDTO = {
+      id: list.id,
       name: name,
       tasks: [],
     };
-    ToDoListService.createToDoList(userId, newToDoList)
-      .then(() => handleDialog())
-      .catch();
+    ToDoListService.updateToDoList(list.id, updatedToDoList);
   };
   const validationSchema = () => {
     Yup.object().shape({
@@ -57,9 +61,9 @@ const DialogForm = ({
       {({ values, handleChange, isValid, dirty }) => {
         return (
           <Form method="post">
-            <Dialog open={open} onClose={handleDialog}>
+            <Dialog open={open} onClose={() => {}}>
               <DialogTitle>{title}</DialogTitle>
-              <DialogContent>
+              <DialogContent style={{ width: "30rem" }}>
                 <DialogContentText>{text}</DialogContentText>
                 <TextField
                   autoFocus
@@ -73,11 +77,15 @@ const DialogForm = ({
                 />
               </DialogContent>
               <DialogActions>
-                <Button onClick={handleDialog} variant="outlined">
+                <Button onClick={() => setOpen(!open)} variant="outlined">
                   Cancel
                 </Button>
                 <Button
-                  onClick={() => createToDoList(userId, values.name)}
+                  onClick={() => {
+                    updateToDoList(values.name);
+                    setListUpdated();
+                    setOpen(false);
+                  }}
                   variant="contained"
                   disabled={!isValid || !dirty}
                 >
@@ -91,4 +99,4 @@ const DialogForm = ({
     </Formik>
   );
 };
-export default DialogForm;
+export default UpdateListDialog;

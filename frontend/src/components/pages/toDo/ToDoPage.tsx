@@ -9,15 +9,13 @@ import {
   Grid,
   Typography,
 } from "@material-ui/core";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
+import { List, ListItem, ListItemAvatar, Button } from "@mui/material";
+
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LogoutIcon from "@mui/icons-material/Logout";
-import Button from "@mui/material/Button";
 import { useEffect, useState } from "react";
-import AddListDialog from "../../atoms/AddListDialog";
+import AddListDialog from "../../atoms/Dialogs/AddListDialog";
 import { ToDo } from "../../../models/ToDo";
 import ToDoList from "../../atoms/ToDoList/ToDoList";
 import "./ToDoPage.css";
@@ -27,7 +25,9 @@ import ToDoListService from "../../../services/ToDoListService";
 import TaskList from "../../atoms/TaskList/TaskList";
 import SearchField from "../../atoms/SearchField";
 import AddButton from "../../atoms/AddButton/AddButton";
-import AddTaskDialog from "../../atoms/TaskDialog/AddTaskDialog";
+import AddTaskDialog from "../../atoms/Dialogs/AddTaskDialog";
+import JoyrideTour from "../../atoms/JoyrideTour";
+import { Step } from "react-joyride";
 const ToDoPage = () => {
   const [toDo, setToDo] = useState<ToDo>();
   const [lists, setLists] = useState<ToDo[]>([]);
@@ -36,11 +36,16 @@ const ToDoPage = () => {
     name: "test",
   });
   const [taskDeleted, setTaskDeleted] = useState<boolean>(false);
+  const [taskUpdated, setTaskUpdated] = useState<boolean>(false);
   const [deleteModus, setDeleteModus] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [openFormDialog, setOpenFormDialog] = useState<boolean>(false);
   const [openTaskDialog, setTaskDialog] = useState<boolean>(false);
+  const [listUpdated, setListUpdated] = useState<boolean>(false);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [filterValue, setFilterValue] = useState("");
+  const [prevFilterValue, setPrevFilterValue] = useState("");
+  const [runTour, setRunTour] = useState<boolean>(false);
 
   const userId = "3";
   const getLists = (userId: string) => {
@@ -77,27 +82,34 @@ const ToDoPage = () => {
     if (selectedToDo.id !== "1") {
       getTasks(selectedToDo.id.toString());
     }
-  }, [selectedToDo, openTaskDialog]);
+  }, [selectedToDo, openTaskDialog, taskUpdated, taskDeleted]);
 
   useEffect(() => {
     getLists(userId);
-  }, [userId, openFormDialog, open, taskDeleted]);
+  }, [userId, openFormDialog, open, listUpdated]);
 
-  const steps = [
+  const joyrideSteps: Step[] = [
     {
-      target: "#userDetailsSheet",
-      content: <JoyrideContent title={"Step 1"} body={" "} />,
+      target: "#chooseAList",
+      content: (
+        <JoyrideContent
+          title={"Choose a List"}
+          body={
+            "Here are all of your ToDo lists displayed. To add tasks, edit the name of the list or delete list you can select the list you would like to edit."
+          }
+        />
+      ),
       placement: "auto",
       disableBeacon: true,
     },
     {
-      target: "#userGroupsTable",
+      target: "#deleteAList",
       content: <JoyrideContent title={"Step 2"} body={" "} />,
       placement: "auto",
       disableBeacon: true,
     },
     {
-      target: "#userCoursesTable",
+      target: "#addATask",
       content: <JoyrideContent title={"Step 3"} body={" "} />,
       placement: "auto",
       disableBeacon: true,
@@ -112,6 +124,8 @@ const ToDoPage = () => {
 
   return (
     <Grid container>
+      {" "}
+      <JoyrideTour run={runTour} setRun={setRunTour} steps={joyrideSteps} />
       <Grid item md={5} xs={12} direction={"column"}>
         <List>
           <Card id={"logOutCard"}>
@@ -155,7 +169,12 @@ const ToDoPage = () => {
               )
             }
           >
-            <Typography component="h2" variant="h5" className={"text"}>
+            <Typography
+              component="h2"
+              variant="h5"
+              className={"text"}
+              id={"chooseAList"}
+            >
               ToDo Lists
             </Typography>
           </ListItem>
@@ -171,6 +190,8 @@ const ToDoPage = () => {
             setSelectedToDo(selectedTD);
           }}
           selectedToDo={selectedToDo}
+          listUpdated={listUpdated}
+          setListUpdated={() => setListUpdated(!listUpdated)}
         />
         <Button
           color={"primary"}
@@ -214,10 +235,13 @@ const ToDoPage = () => {
               label={""}
               disabled={false}
               name={""}
-              searchTerm={""}
-              setSearchTerm={function (string: string): void {
-                throw new Error("Function not implemented.");
-              }}
+              searchTerm={filterValue}
+              setSearchTerm={(searchTerm) =>
+                setFilterValue((prev) => {
+                  setPrevFilterValue(prev);
+                  return searchTerm;
+                })
+              }
             ></SearchField>
           </Grid>
           <Grid item md={3}></Grid>{" "}
@@ -227,6 +251,8 @@ const ToDoPage = () => {
                 tasks={tasks}
                 taskDeleted={taskDeleted}
                 setTaskDeleted={setTaskDeleted}
+                taskUpdated={taskUpdated}
+                setTaskUpdated={setTaskUpdated}
               ></TaskList>
             </Grid>
             {lists.includes(selectedToDo) && (

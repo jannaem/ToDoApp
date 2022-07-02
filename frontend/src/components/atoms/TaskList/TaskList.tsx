@@ -8,9 +8,17 @@ interface TaskListProps {
   tasks: Task[];
   taskDeleted: boolean;
   setTaskDeleted: (taskDeleted: boolean) => void;
+  taskUpdated: boolean;
+  setTaskUpdated: (taskUpdated: boolean) => void;
 }
 
-const TaskList = ({ tasks, taskDeleted, setTaskDeleted }: TaskListProps) => {
+const TaskList = ({
+  tasks,
+  taskDeleted,
+  setTaskDeleted,
+  taskUpdated,
+  setTaskUpdated,
+}: TaskListProps) => {
   return (
     <List id={"tasklist"}>
       {tasks.map((task: Task) => (
@@ -20,6 +28,8 @@ const TaskList = ({ tasks, taskDeleted, setTaskDeleted }: TaskListProps) => {
               task={task}
               taskDeleted={taskDeleted}
               setTaskDeleted={setTaskDeleted}
+              taskUpdated={taskUpdated}
+              setTaskUpdated={setTaskUpdated}
             ></Checkbox>
           </Grid>
         </ListItem>

@@ -1,8 +1,8 @@
 import Task from "../models/Task";
 
-export interface ToDo {
+export interface ToDoTO {
   id: string;
   name: string;
   tasks: Task[];
 }
-export default ToDo;
+export default ToDoTO;

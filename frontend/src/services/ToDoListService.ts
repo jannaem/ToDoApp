@@ -17,7 +17,7 @@ const ToDoListService = {
     const { data } = await api.post(`/list/${userId}`, toDoList);
     return data;
   },
-  getAllLists: async (userId: string): Promise<ToDo[]> => {
+  getAllLists: async (userId: string): Promise<ToDoDTO[]> => {
     const { data } = await api.get(`/list/user/${userId}`);
     return data;
   },
