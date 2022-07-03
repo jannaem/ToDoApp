@@ -1,10 +1,24 @@
-import Button, { Fab } from "@material-ui/core";
+import { Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
-const AddButton = () => {
+interface AddButtonProps {
+  onClick: () => void;
+}
+const AddButton = ({ onClick }: AddButtonProps) => {
   return (
-    <Fab>
-      Add Task
+    <Fab
+      id="Button"
+      style={{
+        background: "#69CABC",
+        width: "100%",
+        color: "#ffffff",
+        boxShadow: "none",
+        marginTop: "1rem",
+      }}
+      variant="extended"
+      onClick={onClick}
+    >
       <AddIcon />
+      Add Task
     </Fab>
   );
 };

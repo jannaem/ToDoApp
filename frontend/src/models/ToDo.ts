@@ -1,5 +1,5 @@
 export interface ToDo {
-  id: number;
+  id: string;
   name: string;
 }
 export default ToDo;

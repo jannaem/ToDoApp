@@ -86,7 +86,7 @@ export const AuthenticationContextProvider = ({
     CookieUtility.remove(ACCESS_TOKEN);
     CookieUtility.remove(REFRESH_TOKEN);
     setPrincipal(undefined);
-    displaySnackbarMessage("Logout war erfolgreich", "success");
+    displaySnackbarMessage("Logged out", "info");
   };
 
   const requestNewToken = () =>

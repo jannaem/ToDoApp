@@ -32,7 +32,7 @@ public class ToDoListTask {
   private ToDoList list;
 
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "id_task", referencedColumnName = "taskId")
+  @JoinColumn(name = "id_task", referencedColumnName = "id")
   private Task task;
 
 }

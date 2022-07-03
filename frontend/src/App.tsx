@@ -1,6 +1,9 @@
 import React from "react";
 import "./App.css";
+<<<<<<< HEAD
 import { AuthenticationContextProvider } from "./contexts/AuthenticationContext";
+=======
+>>>>>>> main
 import { SnackbarContextProvider } from "./contexts/SnackbarContext";
 import Router from "./functional/Router";
 

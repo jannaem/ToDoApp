@@ -1,25 +1,24 @@
-.selectedToDo{
-    background-color: #fff;
-    border: #69CABC;
-    color:#50A8AB;
-    font-family: monospace;
+.selectedToDo {
+  background-color: #fff;
+  border: #69cabc;
+  color: #50a8ab;
+  font-family: monospace;
 }
-    
-.toDo{
-    border: 1px solid #fff;
-    border-radius: 1px;
-    font-family: monospace;
+
+.toDo {
+  border: 1px solid #fff;
+  border-radius: 1px;
+  font-family: monospace;
 }
-    
-#list{
-    max-height: 66vh;
-    min-height: 66vh;
-    overflow: auto;
-    background: #b2ecd73a;
-    font-family: monospace;
+
+#list {
+  max-height: 74vh;
+  min-height: 74vh;
+  overflow: auto;
+  background: #b2ecd73a;
+  font-family: monospace;
 }
 .MuiTypography-root {
-    font-family: monospace ;
-    font-weight: 300 ;
-
+  font-family: monospace;
+  font-weight: 300;
 }
