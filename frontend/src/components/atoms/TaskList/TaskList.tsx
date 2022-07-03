@@ -10,6 +10,10 @@ interface TaskListProps {
   setTaskDeleted: (taskDeleted: boolean) => void;
   taskUpdated: boolean;
   setTaskUpdated: (taskUpdated: boolean) => void;
+  openUpdate: boolean;
+  handleUpdatedDialog: (openUpdated: boolean) => void;
+  openDelete: boolean;
+  handleDeletedDialog: (openDeleted: boolean) => void;
 }
 
 const TaskList = ({
@@ -18,6 +22,10 @@ const TaskList = ({
   setTaskDeleted,
   taskUpdated,
   setTaskUpdated,
+  openUpdate,
+  handleUpdatedDialog,
+  openDelete,
+  handleDeletedDialog,
 }: TaskListProps) => {
   return (
     <List id={"tasklist"}>
@@ -27,9 +35,13 @@ const TaskList = ({
             <Checkbox
               task={task}
               taskDeleted={taskDeleted}
-              setTaskDeleted={setTaskDeleted}
+              setTaskDeleted={() => setTaskDeleted}
               taskUpdated={taskUpdated}
-              setTaskUpdated={setTaskUpdated}
+              setTaskUpdated={() => setTaskUpdated}
+              handleUpdatedDialog={handleUpdatedDialog}
+              openUpdate={openUpdate}
+              handleDeletedDialog={handleDeletedDialog}
+              openDelete={openDelete}
             ></Checkbox>
           </Grid>
         </ListItem>

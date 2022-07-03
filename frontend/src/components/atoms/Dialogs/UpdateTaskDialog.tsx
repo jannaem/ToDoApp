@@ -7,11 +7,13 @@ import {
   DialogTitle,
   TextField,
 } from "@material-ui/core";
-import { createTheme } from "@mui/material";
 import { Form, Formik } from "formik";
+import { useContext } from "react";
 import * as Yup from "yup";
+import SnackbarContext from "../../../contexts/SnackbarContext";
 import Task from "../../../models/Task";
 import TaskService from "../../../services/TaskService";
+import { DialogFormValidation } from "../../Validation";
 import "./TaskDialog.css";
 
 interface DialogProps {
@@ -22,7 +24,7 @@ interface DialogProps {
   open: boolean;
   task: Task;
   taskUpdated: boolean;
-  setTaskUpdated: () => void;
+  setTaskUpdated: (taskUpdated: boolean) => void;
 }
 const UpdateTaskDialog = ({
   title,
@@ -34,6 +36,7 @@ const UpdateTaskDialog = ({
   taskUpdated,
   setTaskUpdated,
 }: DialogProps) => {
+  const { displaySnackbarMessage } = useContext(SnackbarContext);
   const updateTask = (task: Task, name: string) => {
     const updatedTask: Task = {
       id: task.id,
@@ -41,25 +44,19 @@ const UpdateTaskDialog = ({
       status: task.status,
     };
     TaskService.updateTask(task.id, updatedTask)
-      .then(() => handleDialog())
-      .catch();
+      .then(() => {
+        displaySnackbarMessage("Task updated successfully", "success");
+        handleDialog();
+      })
+      .catch(() => displaySnackbarMessage("Task update failed", "error"));
   };
-  const classes = createTheme();
-  console.log(open, "open");
-  const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .trim()
-      .required("A name needs to be entered")
-      .min(2, "The task name has to be at least 2 characters long")
-      .max(25, "test"),
-  });
 
   return (
     <Formik
       enableReinitialize
       onSubmit={() => {}}
-      validationSchema={validationSchema}
-      initialValues={{ name: "o", status: false }}
+      validationSchema={DialogFormValidation}
+      initialValues={{ name: "", status: false }}
     >
       {({ values, handleChange, isValid, dirty, resetForm, errors }) => {
         return (
@@ -70,6 +67,7 @@ const UpdateTaskDialog = ({
                 <DialogContent style={{ width: "30rem" }}>
                   <DialogContentText>{text}</DialogContentText>
                   <TextField
+                    required
                     autoFocus
                     margin="dense"
                     label={label}
@@ -95,7 +93,7 @@ const UpdateTaskDialog = ({
                   <Button
                     onClick={() => {
                       updateTask(task, values.name);
-                      setTaskUpdated();
+                      setTaskUpdated(!taskUpdated);
                       resetForm();
                     }}
                     variant="contained"

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import MUICheckbox from "@material-ui/core/Checkbox";
 import CircleCheckedFilled from "@material-ui/icons/CheckCircle";
 import CircleUnchecked from "@material-ui/icons/RadioButtonUnchecked";
@@ -14,14 +14,18 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DeleteTaskDialog from "../Dialogs/DeleteTaskDialog";
 import EditIcon from "@mui/icons-material/Edit";
 import UpdateTaskDialog from "../Dialogs/UpdateTaskDialog";
-import { Form, Formik } from "formik";
+import SnackbarContext from "../../../contexts/SnackbarContext";
 
 interface CheckBoxProps {
   task: Task;
   taskDeleted: boolean;
-  setTaskDeleted: (taskDeleted: boolean) => void;
+  setTaskDeleted: () => void;
   taskUpdated: boolean;
-  setTaskUpdated: (taskUpdated: boolean) => void;
+  setTaskUpdated: () => void;
+  openUpdate: boolean;
+  handleUpdatedDialog: (openUpdated: boolean) => void;
+  openDelete: boolean;
+  handleDeletedDialog: (openDeleted: boolean) => void;
 }
 const Checkbox = ({
   task,
@@ -29,23 +33,31 @@ const Checkbox = ({
   setTaskDeleted,
   taskUpdated,
   setTaskUpdated,
+  openUpdate,
+  handleUpdatedDialog,
+  openDelete,
+  handleDeletedDialog,
 }: CheckBoxProps) => {
-  console.log(task, "task");
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
   const [checked, setChecked] = useState(task.status);
   const handleChange = () => {
     setChecked(!checked);
     updateStatus();
   };
+  const { displaySnackbarMessage } = useContext(SnackbarContext);
   const updateStatus = () => {
     const updatedTask: Task = {
       id: task.id,
       name: task.name,
       status: !checked,
     };
-    TaskService.updateTask(task.id, updatedTask);
+    TaskService.updateTask(task.id, updatedTask)
+      .then(() => {
+        displaySnackbarMessage("Task updated successfully", "success");
+        console.log("is this even happening");
+      })
+      .catch(() => displaySnackbarMessage("Task update failed", "error"));
   };
+
   return (
     <>
       <Card id="card" variant="outlined">
@@ -75,8 +87,8 @@ const Checkbox = ({
                 edge="end"
                 aria-label="delete"
                 onClick={() => {
-                  setOpenUpdateDialog(true);
-                  setTaskDeleted(!taskDeleted);
+                  handleUpdatedDialog(true);
+                  setTaskUpdated();
                 }}
               >
                 <EditIcon />
@@ -88,8 +100,8 @@ const Checkbox = ({
                 edge="end"
                 aria-label="delete"
                 onClick={() => {
-                  setOpenDeleteDialog(true);
-                  setTaskDeleted(!taskDeleted);
+                  handleDeletedDialog(true);
+                  setTaskDeleted();
                 }}
               >
                 <DeleteIcon />
@@ -99,22 +111,31 @@ const Checkbox = ({
         </CardContent>
       </Card>
       <DeleteTaskDialog
-        open={openDeleteDialog}
-        handleDialog={() => setOpenDeleteDialog(false)}
-        deleteAction={() => TaskService.deleteTask(task.id)}
+        open={openDelete}
+        handleDialog={() => handleDeletedDialog(openDelete)}
+        deleteAction={() => {
+          TaskService.deleteTask(task.id)
+            .then(() => {
+              displaySnackbarMessage("Task deleted successfully", "success");
+              console.log("is this even happening");
+            })
+            .catch(() =>
+              displaySnackbarMessage("Task deletion failed", "error")
+            );
+        }}
         task={task}
-        setTaskDeleted={() => setTaskDeleted(!taskDeleted)}
+        setTaskDeleted={setTaskDeleted}
         taskDeleted={taskDeleted}
       ></DeleteTaskDialog>
       <UpdateTaskDialog
         title={"Edit task name"}
         text={"Enter the new task name"}
         label={"Name"}
-        handleDialog={() => setOpenUpdateDialog(false)}
-        open={openUpdateDialog}
+        handleDialog={() => handleUpdatedDialog(openUpdate)}
+        open={openUpdate}
         task={task}
         taskUpdated={taskUpdated}
-        setTaskUpdated={() => setTaskUpdated(!taskUpdated)}
+        setTaskUpdated={setTaskUpdated}
       ></UpdateTaskDialog>
     </>
   );

@@ -1,20 +1,10 @@
-import {
-  Avatar,
-  Card,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Grid,
-  Typography,
-} from "@material-ui/core";
+import { Avatar, Card, Grid, Typography } from "@material-ui/core";
 import { List, ListItem, ListItemAvatar, Button } from "@mui/material";
 
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AddListDialog from "../../atoms/Dialogs/AddListDialog";
 import { ToDo } from "../../../models/ToDo";
 import ToDoList from "../../atoms/ToDoList/ToDoList";
@@ -28,12 +18,18 @@ import AddButton from "../../atoms/AddButton/AddButton";
 import AddTaskDialog from "../../atoms/Dialogs/AddTaskDialog";
 import JoyrideTour from "../../atoms/JoyrideTour";
 import { Step } from "react-joyride";
+import SnackbarContext from "../../../contexts/SnackbarContext";
+import ApiService from "../../../services/ApiService";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../contexts/AuthenticationContext";
 const ToDoPage = () => {
+  const navigation = useNavigate();
+  const { logout } = useAuth();
   const [toDo, setToDo] = useState<ToDo>();
   const [lists, setLists] = useState<ToDo[]>([]);
   const [selectedToDo, setSelectedToDo] = useState<ToDo>({
-    id: "1",
-    name: "test",
+    id: "1234",
+    name: "default",
   });
   const [taskDeleted, setTaskDeleted] = useState<boolean>(false);
   const [taskUpdated, setTaskUpdated] = useState<boolean>(false);
@@ -42,25 +38,43 @@ const ToDoPage = () => {
   const [openFormDialog, setOpenFormDialog] = useState<boolean>(false);
   const [openTaskDialog, setTaskDialog] = useState<boolean>(false);
   const [listUpdated, setListUpdated] = useState<boolean>(false);
+  const [listDeleted, setListDeleted] = useState<boolean>(false);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filterValue, setFilterValue] = useState("");
   const [prevFilterValue, setPrevFilterValue] = useState("");
   const [runTour, setRunTour] = useState<boolean>(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
 
   const userId = "3";
+  const { displaySnackbarMessage } = useContext(SnackbarContext);
   const getLists = (userId: string) => {
-    ToDoListService.getAllLists(userId).then((res) => {
-      setLists(res);
-    });
+    ToDoListService.getAllLists(userId)
+      .then((res) => {
+        setLists(res);
+      })
+      .catch(() =>
+        displaySnackbarMessage("There was a technical error. Try again later!")
+      );
   };
   const getTasks = (listId: string) => {
-    ToDoListService.getToDoList(listId).then((res) => {
-      setTasks(res.tasks);
-    });
+    ToDoListService.getToDoList(listId)
+      .then((res) => {
+        setTasks(res.tasks);
+      })
+      .catch(() =>
+        displaySnackbarMessage("There was a technical error. Try again later!")
+      );
   };
 
   const handleDeleteButton = () => {
     setDeleteModus(!deleteModus);
+  };
+  const handleDeleteTask = () => {
+    setOpenDeleteDialog(!openDeleteDialog);
+  };
+  const handleUpdateTask = () => {
+    setOpenUpdateDialog(!openUpdateDialog);
   };
   const handleDialog = () => {
     setOpen(!open);
@@ -71,22 +85,33 @@ const ToDoPage = () => {
   const handleTaskDialog = () => {
     setTaskDialog(!openTaskDialog);
   };
-  useEffect(() => {
-    console.log(lists.length);
-    if (lists.length > 0) {
-      setSelectedToDo(lists[0]);
-      getTasks(lists[0].id);
-    }
-  }, [lists]);
+
   useEffect(() => {
     if (selectedToDo.id !== "1") {
       getTasks(selectedToDo.id.toString());
     }
-  }, [selectedToDo, openTaskDialog, taskUpdated, taskDeleted]);
+  }, [
+    selectedToDo,
+    openTaskDialog,
+    taskUpdated,
+    taskDeleted,
+    openUpdateDialog,
+    openDeleteDialog,
+  ]);
+  useEffect(() => {
+    getTasks(selectedToDo.id);
+  }, [tasks]);
 
   useEffect(() => {
+    if (
+      (lists.length > 0 && selectedToDo.name === "default") ||
+      lists.length === 1
+    ) {
+      setSelectedToDo(lists[0]);
+      getTasks(lists[0].id);
+    }
     getLists(userId);
-  }, [userId, openFormDialog, open, listUpdated]);
+  }, [userId, openFormDialog, open, listUpdated, lists]);
 
   const joyrideSteps: Step[] = [
     {
@@ -124,7 +149,6 @@ const ToDoPage = () => {
 
   return (
     <Grid container>
-      {" "}
       <JoyrideTour run={runTour} setRun={setRunTour} steps={joyrideSteps} />
       <Grid item md={5} xs={12} direction={"column"}>
         <List>
@@ -133,7 +157,14 @@ const ToDoPage = () => {
               <ListItem
                 disablePadding
                 secondaryAction={
-                  <Button variant="contained" endIcon={<LogoutIcon />}>
+                  <Button
+                    variant="contained"
+                    endIcon={<LogoutIcon />}
+                    onClick={() => {
+                      logout();
+                      navigation("/");
+                    }}
+                  >
                     logout
                   </Button>
                 }
@@ -156,7 +187,7 @@ const ToDoPage = () => {
                   endIcon={<DeleteIcon />}
                   onClick={handleDeleteButton}
                 >
-                  delete list
+                  edit modus
                 </Button>
               ) : (
                 <Button
@@ -175,7 +206,7 @@ const ToDoPage = () => {
               className={"text"}
               id={"chooseAList"}
             >
-              ToDo Lists
+              To Do Lists
             </Typography>
           </ListItem>
         </List>
@@ -192,6 +223,10 @@ const ToDoPage = () => {
           selectedToDo={selectedToDo}
           listUpdated={listUpdated}
           setListUpdated={() => setListUpdated(!listUpdated)}
+          listDeleted={listDeleted}
+          setListDeleted={() => {
+            setListDeleted(!listDeleted);
+          }}
         />
         <Button
           color={"primary"}
@@ -253,13 +288,16 @@ const ToDoPage = () => {
                 setTaskDeleted={setTaskDeleted}
                 taskUpdated={taskUpdated}
                 setTaskUpdated={setTaskUpdated}
+                handleUpdatedDialog={handleUpdateTask}
+                openUpdate={openUpdateDialog}
+                handleDeletedDialog={handleDeleteTask}
+                openDelete={openDeleteDialog}
               ></TaskList>
             </Grid>
-            {lists.includes(selectedToDo) && (
-              <AddButton
-                onClick={() => setTaskDialog(!openTaskDialog)}
-              ></AddButton>
-            )}
+
+            <AddButton
+              onClick={() => setTaskDialog(!openTaskDialog)}
+            ></AddButton>
           </Grid>
         </Grid>
       </Grid>
@@ -271,32 +309,6 @@ const ToDoPage = () => {
         handleDialog={handleTaskDialog}
         listId={selectedToDo.id}
       ></AddTaskDialog>
-      <Dialog open={open} onClose={handleDialog}>
-        <DialogTitle>{"Confirm delete"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {"Are you sure you want to delete the to do list: "}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            autoFocus
-            variant={"outlined"}
-            onClick={handleDialog}
-            color={"secondary"}
-          >
-            cancel
-          </Button>
-          <Button
-            autoFocus
-            variant={"contained"}
-            onClick={handleDialog}
-            color={"secondary"}
-          >
-            delete
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Grid>
   );
 };

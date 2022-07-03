@@ -14,7 +14,7 @@ interface DialogProps {
   open: boolean;
   task: Task;
   taskDeleted: boolean;
-  setTaskDeleted: () => void;
+  setTaskDeleted: (taskDeleted: boolean) => void;
 }
 const DeleteTaskDialog = ({
   open,
@@ -46,8 +46,8 @@ const DeleteTaskDialog = ({
           autoFocus
           variant={"contained"}
           onClick={() => {
-            setTaskDeleted();
             deleteAction();
+            setTaskDeleted(!taskDeleted);
             handleDialog();
           }}
           color={"secondary"}

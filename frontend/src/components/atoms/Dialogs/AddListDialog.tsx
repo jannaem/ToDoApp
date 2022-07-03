@@ -11,7 +11,8 @@ import { Form, Formik, yupToFormErrors } from "formik";
 import ToDoDTO from "../../../models/ToDoDTO";
 import ToDoListService from "../../../services/ToDoListService";
 import * as Yup from "yup";
-
+import SnackbarContext from "../../../contexts/SnackbarContext";
+import { useContext, useEffect, useState } from "react";
 interface DialogProps {
   title: string;
   text: string;
@@ -28,6 +29,7 @@ const AddListDialog = ({
   handleDialog,
   userId,
 }: DialogProps) => {
+  const { displaySnackbarMessage } = useContext(SnackbarContext);
   const createToDoList = (userId: string, name: string) => {
     const newToDoList: ToDoDTO = {
       id: "",
@@ -35,8 +37,12 @@ const AddListDialog = ({
       tasks: [],
     };
     ToDoListService.createToDoList(userId, newToDoList)
-      .then(() => handleDialog())
-      .catch();
+      .then(() => {
+        displaySnackbarMessage("List created successfully", "success");
+        console.log("is this even happening");
+        handleDialog();
+      })
+      .catch(() => displaySnackbarMessage("List creation failed", "error"));
   };
   const validationSchema = () => {
     Yup.object().shape({
@@ -73,7 +79,11 @@ const AddListDialog = ({
                 />
               </DialogContent>
               <DialogActions>
-                <Button onClick={handleDialog} variant="outlined">
+                <Button
+                  onClick={handleDialog}
+                  variant="outlined"
+                  className={"cancelButton"}
+                >
                   Cancel
                 </Button>
                 <Button
