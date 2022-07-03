@@ -1,23 +1,11 @@
-import {
-  Avatar,
-  Card,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Grid,
-  Typography,
-} from "@material-ui/core";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
+import { Avatar, Card, Grid, Typography } from "@material-ui/core";
+import { List, ListItem, ListItemAvatar, Button } from "@mui/material";
+
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LogoutIcon from "@mui/icons-material/Logout";
-import Button from "@mui/material/Button";
-import { useEffect, useState } from "react";
-import DialogForm from "../../atoms/DialogForm";
+import { useContext, useEffect, useState } from "react";
+import AddListDialog from "../../atoms/Dialogs/AddListDialog";
 import { ToDo } from "../../../models/ToDo";
 import ToDoList from "../../atoms/ToDoList/ToDoList";
 import "./ToDoPage.css";
@@ -27,35 +15,66 @@ import ToDoListService from "../../../services/ToDoListService";
 import TaskList from "../../atoms/TaskList/TaskList";
 import SearchField from "../../atoms/SearchField";
 import AddButton from "../../atoms/AddButton/AddButton";
-import TaskDialog from "../../atoms/TaskDialog/TaskDialog";
+import AddTaskDialog from "../../atoms/Dialogs/AddTaskDialog";
+import JoyrideTour from "../../atoms/JoyrideTour";
+import { Step } from "react-joyride";
+import SnackbarContext from "../../../contexts/SnackbarContext";
+import ApiService from "../../../services/ApiService";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../contexts/AuthenticationContext";
 const ToDoPage = () => {
+  const navigation = useNavigate();
+  const { logout } = useAuth();
   const [toDo, setToDo] = useState<ToDo>();
   const [lists, setLists] = useState<ToDo[]>([]);
   const [selectedToDo, setSelectedToDo] = useState<ToDo>({
-    id: "1",
-    name: "test",
+    id: "1234",
+    name: "default",
   });
   const [taskDeleted, setTaskDeleted] = useState<boolean>(false);
+  const [taskUpdated, setTaskUpdated] = useState<boolean>(false);
   const [deleteModus, setDeleteModus] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [openFormDialog, setOpenFormDialog] = useState<boolean>(false);
   const [openTaskDialog, setTaskDialog] = useState<boolean>(false);
+  const [listUpdated, setListUpdated] = useState<boolean>(false);
+  const [listDeleted, setListDeleted] = useState<boolean>(false);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [filterValue, setFilterValue] = useState("");
+  const [prevFilterValue, setPrevFilterValue] = useState("");
+  const [runTour, setRunTour] = useState<boolean>(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
 
   const userId = "3";
+  const { displaySnackbarMessage } = useContext(SnackbarContext);
   const getLists = (userId: string) => {
-    ToDoListService.getAllLists(userId).then((res) => {
-      setLists(res);
-    });
+    ToDoListService.getAllLists(userId)
+      .then((res) => {
+        setLists(res);
+      })
+      .catch(() =>
+        displaySnackbarMessage("There was a technical error. Try again later!")
+      );
   };
   const getTasks = (listId: string) => {
-    ToDoListService.getToDoList(listId).then((res) => {
-      setTasks(res.tasks);
-    });
+    ToDoListService.getToDoList(listId)
+      .then((res) => {
+        setTasks(res.tasks);
+      })
+      .catch(() =>
+        displaySnackbarMessage("There was a technical error. Try again later!")
+      );
   };
 
   const handleDeleteButton = () => {
     setDeleteModus(!deleteModus);
+  };
+  const handleDeleteTask = () => {
+    setOpenDeleteDialog(!openDeleteDialog);
+  };
+  const handleUpdateTask = () => {
+    setOpenUpdateDialog(!openUpdateDialog);
   };
   const handleDialog = () => {
     setOpen(!open);
@@ -71,27 +90,51 @@ const ToDoPage = () => {
     if (selectedToDo.id !== "1") {
       getTasks(selectedToDo.id.toString());
     }
-  }, [selectedToDo, openTaskDialog]);
+  }, [
+    selectedToDo,
+    openTaskDialog,
+    taskUpdated,
+    taskDeleted,
+    openUpdateDialog,
+    openDeleteDialog,
+  ]);
+  useEffect(() => {
+    getTasks(selectedToDo.id);
+  }, [tasks]);
 
   useEffect(() => {
+    if (
+      (lists.length > 0 && selectedToDo.name === "default") ||
+      lists.length === 1
+    ) {
+      setSelectedToDo(lists[0]);
+      getTasks(lists[0].id);
+    }
     getLists(userId);
-  }, [userId, openFormDialog, open, taskDeleted]);
+  }, [userId, openFormDialog, open, listUpdated, lists]);
 
-  const steps = [
+  const joyrideSteps: Step[] = [
     {
-      target: "#userDetailsSheet",
-      content: <JoyrideContent title={"Step 1"} body={" "} />,
+      target: "#chooseAList",
+      content: (
+        <JoyrideContent
+          title={"Choose a List"}
+          body={
+            "Here are all of your ToDo lists displayed. To add tasks, edit the name of the list or delete list you can select the list you would like to edit."
+          }
+        />
+      ),
       placement: "auto",
       disableBeacon: true,
     },
     {
-      target: "#userGroupsTable",
+      target: "#deleteAList",
       content: <JoyrideContent title={"Step 2"} body={" "} />,
       placement: "auto",
       disableBeacon: true,
     },
     {
-      target: "#userCoursesTable",
+      target: "#addATask",
       content: <JoyrideContent title={"Step 3"} body={" "} />,
       placement: "auto",
       disableBeacon: true,
@@ -106,6 +149,7 @@ const ToDoPage = () => {
 
   return (
     <Grid container>
+      <JoyrideTour run={runTour} setRun={setRunTour} steps={joyrideSteps} />
       <Grid item md={5} xs={12} direction={"column"}>
         <List>
           <Card id={"logOutCard"}>
@@ -113,7 +157,14 @@ const ToDoPage = () => {
               <ListItem
                 disablePadding
                 secondaryAction={
-                  <Button variant="contained" endIcon={<LogoutIcon />}>
+                  <Button
+                    variant="contained"
+                    endIcon={<LogoutIcon />}
+                    onClick={() => {
+                      logout();
+                      navigation("/");
+                    }}
+                  >
                     logout
                   </Button>
                 }
@@ -136,7 +187,7 @@ const ToDoPage = () => {
                   endIcon={<DeleteIcon />}
                   onClick={handleDeleteButton}
                 >
-                  delete list
+                  edit modus
                 </Button>
               ) : (
                 <Button
@@ -149,8 +200,13 @@ const ToDoPage = () => {
               )
             }
           >
-            <Typography component="h2" variant="h5" className={"text"}>
-              ToDo Lists
+            <Typography
+              component="h2"
+              variant="h5"
+              className={"text"}
+              id={"chooseAList"}
+            >
+              To Do Lists
             </Typography>
           </ListItem>
         </List>
@@ -165,6 +221,12 @@ const ToDoPage = () => {
             setSelectedToDo(selectedTD);
           }}
           selectedToDo={selectedToDo}
+          listUpdated={listUpdated}
+          setListUpdated={() => setListUpdated(!listUpdated)}
+          listDeleted={listDeleted}
+          setListDeleted={() => {
+            setListDeleted(!listDeleted);
+          }}
         />
         <Button
           color={"primary"}
@@ -176,10 +238,10 @@ const ToDoPage = () => {
         >
           Add ToDo list
         </Button>
-        <DialogForm
+        <AddListDialog
           open={openFormDialog}
           title={"Add ToDo List"}
-          text={"Enter the name of your new ToDo List"}
+          text={"Enter the name of your new list"}
           label={"Name"}
           handleDialog={handleFormDialog}
           userId={userId}
@@ -208,10 +270,13 @@ const ToDoPage = () => {
               label={""}
               disabled={false}
               name={""}
-              searchTerm={""}
-              setSearchTerm={function (string: string): void {
-                throw new Error("Function not implemented.");
-              }}
+              searchTerm={filterValue}
+              setSearchTerm={(searchTerm) =>
+                setFilterValue((prev) => {
+                  setPrevFilterValue(prev);
+                  return searchTerm;
+                })
+              }
             ></SearchField>
           </Grid>
           <Grid item md={3}></Grid>{" "}
@@ -219,53 +284,31 @@ const ToDoPage = () => {
             <Grid item md={12} xs={12}>
               <TaskList
                 tasks={tasks}
-                handleDialog={handleDialog}
                 taskDeleted={taskDeleted}
                 setTaskDeleted={setTaskDeleted}
+                taskUpdated={taskUpdated}
+                setTaskUpdated={setTaskUpdated}
+                handleUpdatedDialog={handleUpdateTask}
+                openUpdate={openUpdateDialog}
+                handleDeletedDialog={handleDeleteTask}
+                openDelete={openDeleteDialog}
               ></TaskList>
             </Grid>
-            {lists.includes(selectedToDo) && (
-              <AddButton
-                onClick={() => setTaskDialog(!openTaskDialog)}
-              ></AddButton>
-            )}
+
+            <AddButton
+              onClick={() => setTaskDialog(!openTaskDialog)}
+            ></AddButton>
           </Grid>
         </Grid>
       </Grid>
-      <TaskDialog
+      <AddTaskDialog
         open={openTaskDialog}
         title={"Add Task to ToDo List"}
         text={"Enter the name of your new Task"}
-        label={"Name  "}
+        label={"Name"}
         handleDialog={handleTaskDialog}
         listId={selectedToDo.id}
-      ></TaskDialog>
-      <Dialog open={open} onClose={handleDialog}>
-        <DialogTitle>{"Confirm delete"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {"Are you sure you want to delete the to do list: "}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            autoFocus
-            variant={"outlined"}
-            onClick={handleDialog}
-            color={"secondary"}
-          >
-            cancel
-          </Button>
-          <Button
-            autoFocus
-            variant={"contained"}
-            onClick={handleDialog}
-            color={"secondary"}
-          >
-            delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+      ></AddTaskDialog>
     </Grid>
   );
 };

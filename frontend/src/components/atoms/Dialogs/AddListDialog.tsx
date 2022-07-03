@@ -8,10 +8,11 @@ import {
   TextField,
 } from "@material-ui/core";
 import { Form, Formik, yupToFormErrors } from "formik";
-import ToDoDTO from "../../models/ToDoDTO";
-import ToDoListService from "../../services/ToDoListService";
+import ToDoDTO from "../../../models/ToDoDTO";
+import ToDoListService from "../../../services/ToDoListService";
 import * as Yup from "yup";
-
+import SnackbarContext from "../../../contexts/SnackbarContext";
+import { useContext, useEffect, useState } from "react";
 interface DialogProps {
   title: string;
   text: string;
@@ -20,7 +21,7 @@ interface DialogProps {
   open: boolean;
   userId: string;
 }
-const DialogForm = ({
+const AddListDialog = ({
   title,
   text,
   label,
@@ -28,6 +29,7 @@ const DialogForm = ({
   handleDialog,
   userId,
 }: DialogProps) => {
+  const { displaySnackbarMessage } = useContext(SnackbarContext);
   const createToDoList = (userId: string, name: string) => {
     const newToDoList: ToDoDTO = {
       id: "",
@@ -35,11 +37,21 @@ const DialogForm = ({
       tasks: [],
     };
     ToDoListService.createToDoList(userId, newToDoList)
-      .then(() => handleDialog())
-      .catch();
+      .then(() => {
+        displaySnackbarMessage("List created successfully", "success");
+        console.log("is this even happening");
+        handleDialog();
+      })
+      .catch(() => displaySnackbarMessage("List creation failed", "error"));
   };
   const validationSchema = () => {
-    Yup.object().shape({ name: Yup.string().trim().required() });
+    Yup.object().shape({
+      name: Yup.string()
+        .trim()
+        .required()
+        .min(2, "The task name has to be at least 2 characters long")
+        .max(25, "test"),
+    });
   };
   return (
     <Formik
@@ -48,12 +60,12 @@ const DialogForm = ({
       validationSchema={validationSchema}
       initialValues={{ name: "" }}
     >
-      {({ values, handleChange }) => {
+      {({ values, handleChange, isValid, dirty }) => {
         return (
           <Form method="post">
             <Dialog open={open} onClose={handleDialog}>
               <DialogTitle>{title}</DialogTitle>
-              <DialogContent>
+              <DialogContent style={{ width: "30rem" }}>
                 <DialogContentText>{text}</DialogContentText>
                 <TextField
                   autoFocus
@@ -67,12 +79,17 @@ const DialogForm = ({
                 />
               </DialogContent>
               <DialogActions>
-                <Button onClick={handleDialog} variant="outlined">
+                <Button
+                  onClick={handleDialog}
+                  variant="outlined"
+                  className={"cancelButton"}
+                >
                   Cancel
                 </Button>
                 <Button
                   onClick={() => createToDoList(userId, values.name)}
                   variant="contained"
+                  disabled={!isValid || !dirty}
                 >
                   Add
                 </Button>
@@ -84,4 +101,4 @@ const DialogForm = ({
     </Formik>
   );
 };
-export default DialogForm;
+export default AddListDialog;
