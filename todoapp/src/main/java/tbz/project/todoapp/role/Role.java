@@ -1,4 +1,4 @@
-package tbz.project.todoapp.user;
+package tbz.project.todoapp.role;
 
 import lombok.*;
 

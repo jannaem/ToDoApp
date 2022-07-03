@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tbz.project.todoapp.role.Role;
+import tbz.project.todoapp.role.RoleRepository;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -33,10 +35,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
     }
     @Override
-    public User saveUser(User user) {
+    public User saveUser(UserDTO userDTO) {
         log.info("Saving new user to the database");
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User newUser = user;
+        userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        User user = new User();
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
+        user.setUsername(userDTO.getUsername());
+        user.setPassword(userDTO.getPassword());
         userRepository.save(user);
         addRoleToUser(user.getUsername(), "ROLE_USER");
         return user;
@@ -61,7 +68,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         log.info("Fetching user {}", username);
         return userRepository.findByUsername(username);
     }
-
+    @Override
+    public UserDTO getUserDTO(String username) {
+        log.info("Fetching user {}", username);
+        User user = userRepository.findByUsername(username);
+        UserDTO userDTO = new UserDTO(user.getFirstName(), user.getLastName(),user.getEmail(), user.getUsername(), user.getPassword());
+    return userDTO;
+    }
     @Override
     public List<User> getUsers() {
         log.info("Fetching all users");

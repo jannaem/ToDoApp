@@ -6,11 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import tbz.project.todoapp.user.Role;
-import tbz.project.todoapp.user.User;
+import tbz.project.todoapp.role.Role;
+import tbz.project.todoapp.user.UserDTO;
 import tbz.project.todoapp.user.UserService;
-
-import java.util.ArrayList;
 
 @SpringBootApplication
 public class TodoappApplication {
@@ -29,8 +27,8 @@ public class TodoappApplication {
         return args -> {
             userService.saveRole(new Role(1, "ROLE_USER"));
             userService.saveRole(new Role(2, "ROLE_ADMIN"));
-            userService.saveUser(new User(1, "Milena", "Blaser", "blaser@gmail.com", "mblaser", "blaser123", new ArrayList<>()));
-            userService.saveUser(new User(2, "Janna", "Esteban", "esteban@gmail.com", "jesteban", "esteban123", new ArrayList<>()));
+            userService.saveUser(new UserDTO("Milena", "Blaser", "blaser@gmail.com", "mblaser", "blaser123"));
+            userService.saveUser(new UserDTO("Janna", "Esteban", "esteban@gmail.com", "jesteban", "esteban123"));
         };
     }
 }

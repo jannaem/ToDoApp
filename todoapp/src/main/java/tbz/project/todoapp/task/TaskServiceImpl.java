@@ -7,9 +7,11 @@ import tbz.project.todoapp.toDoList.ToDoListRepository;
 import tbz.project.todoapp.toDoList.ToDoList;
 import tbz.project.todoapp.toDoListTask.ToDoListTask;
 import tbz.project.todoapp.toDoListTask.ToDoListTaskRepository;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TaskServiceImpl implements TaskService {
   private final TaskRepository taskRepository;
   private final ToDoListRepository toDoListRepository;
@@ -24,7 +26,10 @@ public class TaskServiceImpl implements TaskService {
     toDoListTask.setList(list);
     toDoListTask.setTask(newTask);
     toDoListTaskRepository.save(toDoListTask);
-    return taskRepository.save(task);
+    log.info("ToDoListTask was created successfully: {}",toDoListTask );
+    newTask = taskRepository.save(task);
+    log.info("Task was added successfully: {}", newTask);
+    return newTask;
   }
 
   @Override
@@ -39,15 +44,18 @@ public class TaskServiceImpl implements TaskService {
         .orElseThrow(() -> new ItemNotFoundException(NOT_FOUND + id ));
     oldTask.setName(task.getName());
     oldTask.setStatus(task.isStatus());
-    return taskRepository.save(oldTask);
+    Task updatedTask = taskRepository.save(oldTask);
+    log.info("Task was updated as follows: {}", updatedTask);
+    return updatedTask;
   }
 
   @Override
   public void deleteTaskById(int id)throws ItemNotFoundException {
     if (taskRepository.existsById(id)) {
       ToDoListTask toDoListTask = toDoListTaskRepository.findByIdTask(id);
-      toDoListTaskRepository.deleteById(toDoListTask.getId());
+      toDoListTaskRepository.deleteById(toDoListTask.getTodoListTaskId());
       taskRepository.deleteById(id);
+      log.info("Task was with id {} was deleted", id);
     }else{
       throw new ItemNotFoundException(NOT_FOUND + id );
     }

@@ -27,6 +27,7 @@ import tbz.project.todoapp.task.TaskService;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithMockUser(username = "jesteban", password = "esteban123", roles = {"USER"})
 public class TaskControllerTest {
   @Autowired
   private MockMvc mvc;

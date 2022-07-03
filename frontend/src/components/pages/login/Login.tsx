@@ -104,14 +104,10 @@ const Login = () => {
                       }}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      helperText={
-                        errors.username && touched.username
-                          ? errors.username
-                          : null
-                      }
-                      error={
-                        errors.username && touched.username ? true : false
-                      }
+                      helperText={errors.username && touched.username
+                        ? errors.username
+                        : null}
+                      error={errors.username && touched.username ? true : false}
                     />
                   </Grid>
                   <Grid item className="field">
@@ -123,14 +119,10 @@ const Login = () => {
                       type={pwdValues.showPassword ? "text" : "password"}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      helperText={
-                        errors.password && touched.password
-                          ? errors.password
-                          : null
-                      }
-                      error={
-                        errors.password && touched.password ? true : false
-                      }
+                      helperText={errors.password && touched.password
+                        ? errors.password
+                        : null}
+                      error={errors.password && touched.password ? true : false} 
                       label="Password"
                       InputProps={{
                         endAdornment: (

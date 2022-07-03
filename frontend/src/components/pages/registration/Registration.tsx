@@ -11,13 +11,15 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Divider from "../../atoms/Divider";
 import { Form, Formik, FormikValues } from "formik";
 import { FormModelRegistration } from "../../../Model";
 import { useNavigate } from "react-router-dom";
-import { RegistrationFormValidation } from "../../Validation";
 import { User } from "../../../models/User";
+import ApiService from "../../../services/ApiService";
+import SnackbarContext from "../../../contexts/SnackbarContext";
+import { RegistrationFormValidation } from "../../Validation";
 
 interface State {
   password: string;
@@ -26,8 +28,8 @@ interface State {
   showConfirmedPassword: boolean;
 }
 const Registration = () => {
-  const newUser : User;
   const navigate = useNavigate();
+  const { displaySnackbarMessage } = useContext(SnackbarContext);
   const [pwdValues, setPwdValues] = useState<State>({
     password: "",
     showPassword: false,
@@ -50,25 +52,22 @@ const Registration = () => {
   };
 
   const handleSubmit = (
-<<<<<<< HEAD:frontend/src/components/pages/registration/Registration.tsx
     { username, password, email, lastName, firstName}: FormikValues  ) => {
-      ApiService.post("/user", params)
+      const newUser : User = {
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        username: username,
+        password: password,
+      };
+      ApiService.post("/signUp", newUser)
       .then(() => {
-        navigation("/login");
-        displaySnackbarMessage("Passwort wurde erfolgreich zurückgesetzt", "success")
+        navigate("/");
+        displaySnackbarMessage("Account created succesfully!", "success")
       })
       .catch((error) => {
         displaySnackbarMessage(error.response.data, "error");
       });
-=======
-    username: string,
-    password: string,
-    email: string,
-    firstName: string,
-    lastName: string
-  ) => {
-    <div></div>;
->>>>>>> featue/milena:frontend/src/components/pages/registration/RegistrationForm.tsx
   };
 
   const initialValues: FormModelRegistration = {
@@ -283,3 +282,4 @@ const Registration = () => {
   );
 };
 export default Registration;
+
