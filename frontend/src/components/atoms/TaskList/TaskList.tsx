@@ -6,26 +6,20 @@ import Checkbox from "../Checkbox/Checkbox";
 
 interface TaskListProps {
   tasks: Task[];
-  taskDeleted: boolean;
-  setTaskDeleted: (taskDeleted: boolean) => void;
-  taskUpdated: boolean;
-  setTaskUpdated: (taskUpdated: boolean) => void;
   openUpdate: boolean;
   handleUpdatedDialog: (openUpdated: boolean) => void;
   openDelete: boolean;
   handleDeletedDialog: (openDeleted: boolean) => void;
+  tasksCopy: Task[];
 }
 
 const TaskList = ({
   tasks,
-  taskDeleted,
-  setTaskDeleted,
-  taskUpdated,
-  setTaskUpdated,
   openUpdate,
   handleUpdatedDialog,
   openDelete,
   handleDeletedDialog,
+  tasksCopy,
 }: TaskListProps) => {
   return (
     <List id={"tasklist"}>
@@ -34,14 +28,11 @@ const TaskList = ({
           <Grid item md={12} xs={12}>
             <Checkbox
               task={task}
-              taskDeleted={taskDeleted}
-              setTaskDeleted={() => setTaskDeleted}
-              taskUpdated={taskUpdated}
-              setTaskUpdated={() => setTaskUpdated}
               handleUpdatedDialog={handleUpdatedDialog}
               openUpdate={openUpdate}
               handleDeletedDialog={handleDeletedDialog}
               openDelete={openDelete}
+              tasksCopy={tasksCopy}
             ></Checkbox>
           </Grid>
         </ListItem>

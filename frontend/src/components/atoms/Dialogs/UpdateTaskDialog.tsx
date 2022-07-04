@@ -9,7 +9,6 @@ import {
 } from "@material-ui/core";
 import { Form, Formik } from "formik";
 import { useContext } from "react";
-import * as Yup from "yup";
 import SnackbarContext from "../../../contexts/SnackbarContext";
 import Task from "../../../models/Task";
 import TaskService from "../../../services/TaskService";
@@ -23,8 +22,6 @@ interface DialogProps {
   handleDialog: () => void;
   open: boolean;
   task: Task;
-  taskUpdated: boolean;
-  setTaskUpdated: (taskUpdated: boolean) => void;
 }
 const UpdateTaskDialog = ({
   title,
@@ -33,10 +30,9 @@ const UpdateTaskDialog = ({
   open,
   handleDialog,
   task,
-  taskUpdated,
-  setTaskUpdated,
 }: DialogProps) => {
   const { displaySnackbarMessage } = useContext(SnackbarContext);
+  console.log(task, "task");
   const updateTask = (task: Task, name: string) => {
     const updatedTask: Task = {
       id: task.id,
@@ -93,13 +89,12 @@ const UpdateTaskDialog = ({
                   <Button
                     onClick={() => {
                       updateTask(task, values.name);
-                      setTaskUpdated(!taskUpdated);
                       resetForm();
                     }}
                     variant="contained"
                     disabled={!isValid || !dirty}
                   >
-                    Add
+                    Update
                   </Button>
                 </DialogActions>
               </Dialog>

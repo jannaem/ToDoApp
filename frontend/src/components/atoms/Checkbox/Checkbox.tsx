@@ -18,25 +18,19 @@ import SnackbarContext from "../../../contexts/SnackbarContext";
 
 interface CheckBoxProps {
   task: Task;
-  taskDeleted: boolean;
-  setTaskDeleted: () => void;
-  taskUpdated: boolean;
-  setTaskUpdated: () => void;
   openUpdate: boolean;
   handleUpdatedDialog: (openUpdated: boolean) => void;
   openDelete: boolean;
   handleDeletedDialog: (openDeleted: boolean) => void;
+  tasksCopy: Task[];
 }
 const Checkbox = ({
   task,
-  taskDeleted,
-  setTaskDeleted,
-  taskUpdated,
-  setTaskUpdated,
   openUpdate,
   handleUpdatedDialog,
   openDelete,
   handleDeletedDialog,
+  tasksCopy,
 }: CheckBoxProps) => {
   const [checked, setChecked] = useState(task.status);
   const handleChange = () => {
@@ -88,7 +82,6 @@ const Checkbox = ({
                 aria-label="delete"
                 onClick={() => {
                   handleUpdatedDialog(true);
-                  setTaskUpdated();
                 }}
               >
                 <EditIcon />
@@ -101,7 +94,6 @@ const Checkbox = ({
                 aria-label="delete"
                 onClick={() => {
                   handleDeletedDialog(true);
-                  setTaskDeleted();
                 }}
               >
                 <DeleteIcon />
@@ -113,19 +105,8 @@ const Checkbox = ({
       <DeleteTaskDialog
         open={openDelete}
         handleDialog={() => handleDeletedDialog(openDelete)}
-        deleteAction={() => {
-          TaskService.deleteTask(task.id)
-            .then(() => {
-              displaySnackbarMessage("Task deleted successfully", "success");
-              console.log("is this even happening");
-            })
-            .catch(() =>
-              displaySnackbarMessage("Task deletion failed", "error")
-            );
-        }}
         task={task}
-        setTaskDeleted={setTaskDeleted}
-        taskDeleted={taskDeleted}
+        tasksCopy={tasksCopy}
       ></DeleteTaskDialog>
       <UpdateTaskDialog
         title={"Edit task name"}
@@ -134,8 +115,6 @@ const Checkbox = ({
         handleDialog={() => handleUpdatedDialog(openUpdate)}
         open={openUpdate}
         task={task}
-        taskUpdated={taskUpdated}
-        setTaskUpdated={setTaskUpdated}
       ></UpdateTaskDialog>
     </>
   );
