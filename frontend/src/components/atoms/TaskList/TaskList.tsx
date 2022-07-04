@@ -10,7 +10,6 @@ interface TaskListProps {
   handleUpdatedDialog: (openUpdated: boolean) => void;
   openDelete: boolean;
   handleDeletedDialog: (openDeleted: boolean) => void;
-  tasksCopy: Task[];
 }
 
 const TaskList = ({
@@ -19,7 +18,6 @@ const TaskList = ({
   handleUpdatedDialog,
   openDelete,
   handleDeletedDialog,
-  tasksCopy,
 }: TaskListProps) => {
   return (
     <List id={"tasklist"}>
@@ -32,7 +30,6 @@ const TaskList = ({
               openUpdate={openUpdate}
               handleDeletedDialog={handleDeletedDialog}
               openDelete={openDelete}
-              tasksCopy={tasksCopy}
             ></Checkbox>
           </Grid>
         </ListItem>

@@ -275,7 +275,6 @@ const ToDoPage = () => {
                 openUpdate={openUpdateDialog}
                 handleDeletedDialog={handleDeleteTask}
                 openDelete={openDeleteDialog}
-                tasksCopy={tasksCopy}
               ></TaskList>
             </Grid>
             {lists.includes(selectedToDo) && (

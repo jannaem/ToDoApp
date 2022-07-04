@@ -22,7 +22,6 @@ interface CheckBoxProps {
   handleUpdatedDialog: (openUpdated: boolean) => void;
   openDelete: boolean;
   handleDeletedDialog: (openDeleted: boolean) => void;
-  tasksCopy: Task[];
 }
 const Checkbox = ({
   task,
@@ -30,7 +29,6 @@ const Checkbox = ({
   handleUpdatedDialog,
   openDelete,
   handleDeletedDialog,
-  tasksCopy,
 }: CheckBoxProps) => {
   const [checked, setChecked] = useState(task.status);
   const handleChange = () => {
@@ -106,7 +104,6 @@ const Checkbox = ({
         open={openDelete}
         handleDialog={() => handleDeletedDialog(openDelete)}
         task={task}
-        tasksCopy={tasksCopy}
       ></DeleteTaskDialog>
       <UpdateTaskDialog
         title={"Edit task name"}

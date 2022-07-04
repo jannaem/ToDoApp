@@ -15,14 +15,8 @@ interface DialogProps {
   handleDialog: () => void;
   open: boolean;
   task: Task;
-  tasksCopy: Task[];
 }
-const DeleteTaskDialog = ({
-  open,
-  handleDialog,
-  task,
-  tasksCopy,
-}: DialogProps) => {
+const DeleteTaskDialog = ({ open, handleDialog, task }: DialogProps) => {
   const { displaySnackbarMessage } = useContext(SnackbarContext);
   const deleteTask = () => {
     TaskService.deleteTask(task.id)
