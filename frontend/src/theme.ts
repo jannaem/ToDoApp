@@ -31,6 +31,5 @@ const theme = createTheme({
       color:"#69CABC",
     }
   },
-  
 });
 export default theme;

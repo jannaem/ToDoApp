@@ -6,13 +6,16 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
+  ThemeProvider,
 } from "@material-ui/core";
-import { Form, Formik, yupToFormErrors } from "formik";
 import ToDoDTO from "../../../models/ToDoDTO";
 import ToDoListService from "../../../services/ToDoListService";
 import * as Yup from "yup";
 import SnackbarContext from "../../../contexts/SnackbarContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
+import theme from "../../../theme";
+import { Form, Formik } from "formik";
+
 interface DialogProps {
   title: string;
   text: string;
@@ -62,6 +65,7 @@ const AddListDialog = ({
     >
       {({ values, handleChange, isValid, dirty }) => {
         return (
+          <ThemeProvider theme={theme}>
           <Form method="post">
             <Dialog open={open} onClose={handleDialog}>
               <DialogTitle>{title}</DialogTitle>
@@ -73,22 +77,24 @@ const AddListDialog = ({
                   label={label}
                   type="text"
                   fullWidth
-                  variant="standard"
+                  variant="filled"
                   id="name"
                   onChange={handleChange}
+                  color="secondary"
                 />
               </DialogContent>
               <DialogActions>
                 <Button
                   onClick={handleDialog}
                   variant="outlined"
-                  className={"cancelButton"}
+                  color="secondary"
                 >
                   Cancel
                 </Button>
                 <Button
                   onClick={() => createToDoList(userId, values.name)}
                   variant="contained"
+                  color="secondary"
                   disabled={!isValid || !dirty}
                 >
                   Add
@@ -96,6 +102,7 @@ const AddListDialog = ({
               </DialogActions>
             </Dialog>
           </Form>
+          </ThemeProvider>
         );
       }}
     </Formik>

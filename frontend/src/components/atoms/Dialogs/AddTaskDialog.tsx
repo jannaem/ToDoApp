@@ -7,13 +7,14 @@ import {
   DialogTitle,
   TextField,
 } from "@material-ui/core";
-import { createTheme } from "@mui/material";
-import { Form, Formik, yupToFormErrors } from "formik";
+import { ThemeProvider } from "@mui/material";
+import { Form, Formik } from "formik";
 import { useContext } from "react";
 import * as Yup from "yup";
 import SnackbarContext from "../../../contexts/SnackbarContext";
 import Task from "../../../models/Task";
 import TaskService from "../../../services/TaskService";
+import theme from "../../../theme";
 
 interface DialogProps {
   title: string;
@@ -23,6 +24,7 @@ interface DialogProps {
   open: boolean;
   listId: string;
 }
+
 const AddTaskDialog = ({
   title,
   text,
@@ -46,7 +48,6 @@ const AddTaskDialog = ({
       })
       .catch(() => displaySnackbarMessage("Task creation failed", "error"));
   };
-  const classes = createTheme();
   const validationSchema = Yup.object().shape({
     name: Yup.string()
       .trim()
@@ -64,49 +65,54 @@ const AddTaskDialog = ({
     >
       {({ values, handleChange, isValid, dirty, resetForm, errors }) => {
         return (
-          <Form method="post">
-            <>
-              <Dialog open={open} onClose={handleDialog}>
-                <DialogTitle>{title}</DialogTitle>
-                <DialogContent style={{ width: "30rem" }}>
-                  <DialogContentText>{text}</DialogContentText>
-                  <TextField
-                    autoFocus
-                    margin="dense"
-                    label={label}
-                    type="text"
-                    fullWidth
-                    variant="standard"
-                    id="name"
-                    onChange={handleChange}
-                    helperText={errors.name && dirty ? errors.name : ""}
-                    error={errors.name ? true : false}
-                  />
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    onClick={() => {
-                      resetForm();
-                      handleDialog();
-                    }}
-                    variant="outlined"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      createTask(listId, values.name);
-                      resetForm();
-                    }}
-                    variant="contained"
-                    disabled={!isValid || !dirty}
-                  >
-                    Add
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            </>
-          </Form>
+          <ThemeProvider theme={theme}>
+            <Form method="post">
+              <>
+                <Dialog open={open} onClose={handleDialog}>
+                  <DialogTitle>{title}</DialogTitle>
+                  <DialogContent style={{ width: "30rem" }}>
+                    <DialogContentText>{text}</DialogContentText>
+                    <TextField
+                      color="secondary"
+                      autoFocus
+                      margin="dense"
+                      label={label}
+                      type="text"
+                      fullWidth
+                      variant="standard"
+                      id="name"
+                      onChange={handleChange}
+                      helperText={errors.name && dirty ? errors.name : ""}
+                      error={errors.name ? true : false}
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button
+                      onClick={() => {
+                        resetForm();
+                        handleDialog();
+                      }}
+                      variant="outlined"
+                      color="secondary"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      color="secondary"
+                      onClick={() => {
+                        createTask(listId, values.name);
+                        resetForm();
+                      }}
+                      variant="contained"
+                      disabled={!isValid || !dirty}
+                    >
+                      Add
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              </>
+            </Form>
+          </ThemeProvider>
         );
       }}
     </Formik>

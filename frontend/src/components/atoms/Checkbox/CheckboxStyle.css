@@ -1,3 +1,27 @@
 #card {
   margin-top: 1rem;
 }
+.MuiButton-outlinedSecondary{
+   color: #408793 !important; 
+   border: 1px solid rgba(25, 53, 58, 0.5)!important; 
+   font-family: monospace !important;
+}
+.MuiButton-containedSecondary {
+  background-color:#408793 !important ;
+  font-family: monospace !important;
+}
+div.MUIDialogTitle-root{
+  font-family: monospace;
+}
+
+h2.MuiTypography-root.MuiTypography-h6, 
+input#name, label#name{
+  font-family: monospace;
+}
+p.MuiTypography-root{
+  font-family: monospace;
+}
+
+label.MuiFormLabel-root{
+  font-family: monospace;
+}

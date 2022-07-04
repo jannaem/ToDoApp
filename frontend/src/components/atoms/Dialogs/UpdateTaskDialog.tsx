@@ -6,6 +6,7 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
+  ThemeProvider,
 } from "@material-ui/core";
 import { Form, Formik } from "formik";
 import { useContext } from "react";
@@ -13,6 +14,7 @@ import * as Yup from "yup";
 import SnackbarContext from "../../../contexts/SnackbarContext";
 import Task from "../../../models/Task";
 import TaskService from "../../../services/TaskService";
+import theme from "../../../theme";
 import { DialogFormValidation } from "../../Validation";
 import "./TaskDialog.css";
 
@@ -60,51 +62,56 @@ const UpdateTaskDialog = ({
     >
       {({ values, handleChange, isValid, dirty, resetForm, errors }) => {
         return (
-          <Form method="post">
-            <>
-              <Dialog open={open} onClose={handleDialog}>
-                <DialogTitle>{title}</DialogTitle>
-                <DialogContent style={{ width: "30rem" }}>
-                  <DialogContentText>{text}</DialogContentText>
-                  <TextField
-                    required
-                    autoFocus
-                    margin="dense"
-                    label={label}
-                    type="text"
-                    fullWidth
-                    variant="standard"
-                    id="name"
-                    onChange={handleChange}
-                    helperText={errors.name && dirty ? errors.name : ""}
-                    error={errors.name ? true : false}
-                  />
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    onClick={() => {
-                      resetForm();
-                      handleDialog();
-                    }}
-                    variant="outlined"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={() => {
-                      updateTask(task, values.name);
-                      setTaskUpdated(!taskUpdated);
-                      resetForm();
-                    }}
-                    variant="contained"
-                    disabled={!isValid || !dirty}
-                  >
-                    Add
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            </>
-          </Form>
+          <ThemeProvider theme={theme}>
+            <Form method="post">
+              <>
+                <Dialog open={open} onClose={handleDialog}>
+                  <DialogTitle>{title}</DialogTitle>
+                  <DialogContent style={{ width: "30rem" }}>
+                    <DialogContentText>{text}</DialogContentText>
+                    <TextField
+                      required
+                      autoFocus
+                      margin="dense"
+                      label={label}
+                      type="text"
+                      fullWidth
+                      variant="standard"
+                      id="name"
+                      color="secondary"
+                      onChange={handleChange}
+                      helperText={errors.name && dirty ? errors.name : ""}
+                      error={errors.name ? true : false}
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button
+                      onClick={() => {
+                        resetForm();
+                        handleDialog();
+                      }}
+                      variant="outlined"
+                      color="secondary"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        updateTask(task, values.name);
+                        setTaskUpdated(!taskUpdated);
+                        resetForm();
+                      }}
+                      variant="contained"
+                      disabled={!isValid || !dirty}
+                      color="secondary"
+                    >
+                      Add
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              </>
+            </Form>
+          </ThemeProvider>
         );
       }}
     </Formik>

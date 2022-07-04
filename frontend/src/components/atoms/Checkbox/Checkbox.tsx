@@ -7,7 +7,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import "./CheckboxStyle.css";
-import { Grid, IconButton } from "@material-ui/core";
+import { Grid, IconButton, ThemeProvider } from "@material-ui/core";
 import TaskService from "../../../services/TaskService";
 import Task from "../../../models/Task";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -15,6 +15,7 @@ import DeleteTaskDialog from "../Dialogs/DeleteTaskDialog";
 import EditIcon from "@mui/icons-material/Edit";
 import UpdateTaskDialog from "../Dialogs/UpdateTaskDialog";
 import SnackbarContext from "../../../contexts/SnackbarContext";
+import theme from "../../../theme";
 
 interface CheckBoxProps {
   task: Task;
@@ -59,7 +60,7 @@ const Checkbox = ({
   };
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <Card id="card" variant="outlined">
         <CardContent>
           <Grid container>
@@ -137,7 +138,7 @@ const Checkbox = ({
         taskUpdated={taskUpdated}
         setTaskUpdated={setTaskUpdated}
       ></UpdateTaskDialog>
-    </>
+      </ThemeProvider>
   );
 };
 

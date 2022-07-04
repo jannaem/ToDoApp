@@ -6,6 +6,7 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
+  ThemeProvider,
 } from "@material-ui/core";
 import { Form, Formik } from "formik";
 import ToDo from "../../../models/ToDo";
@@ -15,6 +16,7 @@ import ToDoDTO from "../../../models/ToDoDTO";
 import { useContext } from "react";
 import SnackbarContext from "../../../contexts/SnackbarContext";
 import { DialogFormValidation } from "../../Validation";
+import theme from "../../../theme";
 
 interface DialogProps {
   title: string;
@@ -59,50 +61,55 @@ const UpdateListDialog = ({
     >
       {({ values, handleChange, resetForm, dirty, isValid, errors }) => {
         return (
-          <Form method="post">
-            <Dialog open={open} onClose={() => {}}>
-              <DialogTitle>{title}</DialogTitle>
-              <DialogContent style={{ width: "30rem" }}>
-                <DialogContentText>{text}</DialogContentText>
-                <TextField
-                  required
-                  autoFocus
-                  margin="dense"
-                  label={label}
-                  type="text"
-                  fullWidth
-                  variant="standard"
-                  id="name"
-                  onChange={handleChange}
-                  helperText={errors.name && dirty ? errors.name : ""}
-                  error={errors.name ? true : false}
-                />
-              </DialogContent>
-              <DialogActions>
-                <Button
-                  onClick={() => {
-                    resetForm();
-                    setOpen(!open);
-                  }}
-                  variant="outlined"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => {
-                    updateToDoList(values.name);
-                    setListUpdated();
-                    setOpen(false);
-                    resetForm();
-                  }}
-                  variant="contained"
-                  disabled={!isValid || !dirty}
-                >
-                  Update
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </Form>
+          <ThemeProvider theme={theme}>
+            <Form method="post">
+              <Dialog open={open} onClose={() => {}}>
+                <DialogTitle>{title}</DialogTitle>
+                <DialogContent style={{ width: "30rem" }}>
+                  <DialogContentText>{text}</DialogContentText>
+                  <TextField
+                    required
+                    autoFocus
+                    margin="dense"
+                    label={label}
+                    type="text"
+                    fullWidth
+                    variant="standard"
+                    id="name"
+                    onChange={handleChange}
+                    helperText={errors.name && dirty ? errors.name : ""}
+                    error={errors.name ? true : false}
+                    color="secondary"
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={() => {
+                      resetForm();
+                      setOpen(!open);
+                    }}
+                    variant="outlined"
+                    color="secondary"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      updateToDoList(values.name);
+                      setListUpdated();
+                      setOpen(false);
+                      resetForm();
+                    }}
+                    variant="contained"
+                    disabled={!isValid || !dirty}
+                    color="secondary"
+                  >
+                    Update
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </Form>
+          </ThemeProvider>
         );
       }}
     </Formik>
