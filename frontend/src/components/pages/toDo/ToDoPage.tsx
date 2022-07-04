@@ -275,7 +275,6 @@ const ToDoPage = () => {
             </Grid>
             {selectedToDo.id !== "1234" && (
               <AddButton
-                id={"addAList"}
                 onClick={() => setTaskDialog(!openTaskDialog)}
               ></AddButton>
             )}
