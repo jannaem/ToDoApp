@@ -43,7 +43,6 @@ const ToDoPage = () => {
   const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
   const [openDeleteListDialog, setOpenDeleteListDialog] = useState(false);
   const [openUpdateListDialog, setOpenUpdateListDialog] = useState(false);
-  let tasksCopy: Task[] = [];
 
   const userId = "3";
   const getLists = (userId: string) => {
@@ -54,7 +53,6 @@ const ToDoPage = () => {
   const getTasks = (listId: string) => {
     ToDoListService.getToDoList(listId).then((res) => {
       setTasks(res.tasks);
-      tasksCopy = tasks;
     });
   };
 
