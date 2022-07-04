@@ -1,5 +1,5 @@
 export interface ToDo {
-  id: string;
+  toDoListId: string;
   name: string;
 }
 export default ToDo;

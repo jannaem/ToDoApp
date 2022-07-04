@@ -11,7 +11,6 @@ import {
 import { Form, Formik } from "formik";
 import ToDo from "../../../models/ToDo";
 import ToDoListService from "../../../services/ToDoListService";
-import * as Yup from "yup";
 import ToDoDTO from "../../../models/ToDoDTO";
 import { useContext } from "react";
 import SnackbarContext from "../../../contexts/SnackbarContext";
@@ -23,9 +22,7 @@ interface DialogProps {
   text: string;
   label: string;
   list: ToDo;
-  listUpdated: boolean;
-  setListUpdated: () => void;
-  setOpen: (open: boolean) => void;
+  setOpen: () => void;
   open: boolean;
 }
 const UpdateListDialog = ({
@@ -33,22 +30,22 @@ const UpdateListDialog = ({
   text,
   label,
   list,
-  listUpdated,
-  setListUpdated,
   setOpen,
   open,
 }: DialogProps) => {
+console.log("The tdod in update is ", list)
+
   const { displaySnackbarMessage } = useContext(SnackbarContext);
   const updateToDoList = (name: string) => {
     const updatedToDoList: ToDoDTO = {
-      id: list.id,
+      toDoListId: list.toDoListId,
       name: name,
       tasks: [],
     };
-    ToDoListService.updateToDoList(list.id, updatedToDoList)
+    ToDoListService.updateToDoList(list.toDoListId, updatedToDoList)
       .then(() => {
         displaySnackbarMessage("List updated successfully", "success");
-        console.log("is this even happening");
+        setOpen();
       })
       .catch(() => displaySnackbarMessage("List update failed", "error"));
   };
@@ -79,30 +76,26 @@ const UpdateListDialog = ({
                     onChange={handleChange}
                     helperText={errors.name && dirty ? errors.name : ""}
                     error={errors.name ? true : false}
-                    color="secondary"
                   />
                 </DialogContent>
                 <DialogActions>
                   <Button
                     onClick={() => {
+                      setOpen();
                       resetForm();
-                      setOpen(!open);
                     }}
                     variant="outlined"
-                    color="secondary"
                   >
                     Cancel
                   </Button>
                   <Button
                     onClick={() => {
                       updateToDoList(values.name);
-                      setListUpdated();
-                      setOpen(false);
+
                       resetForm();
                     }}
                     variant="contained"
                     disabled={!isValid || !dirty}
-                    color="secondary"
                   >
                     Update
                   </Button>

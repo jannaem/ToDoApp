@@ -32,20 +32,24 @@ const AddListDialog = ({
   handleDialog,
   userId,
 }: DialogProps) => {
+
+console.log("Add Dialof opened")
+
   const { displaySnackbarMessage } = useContext(SnackbarContext);
   const createToDoList = (userId: string, name: string) => {
     const newToDoList: ToDoDTO = {
-      id: "",
+      toDoListId: "",
       name: name,
       tasks: [],
     };
     ToDoListService.createToDoList(userId, newToDoList)
       .then(() => {
         displaySnackbarMessage("List created successfully", "success");
-        console.log("is this even happening");
         handleDialog();
       })
-      .catch(() => displaySnackbarMessage("List creation failed", "error"));
+      .catch(() => {
+        displaySnackbarMessage("List creation failed", "error");
+      });
   };
   const validationSchema = () => {
     Yup.object().shape({
@@ -66,42 +70,43 @@ const AddListDialog = ({
       {({ values, handleChange, isValid, dirty }) => {
         return (
           <ThemeProvider theme={theme}>
-          <Form method="post">
-            <Dialog open={open} onClose={handleDialog}>
-              <DialogTitle>{title}</DialogTitle>
-              <DialogContent style={{ width: "30rem" }}>
-                <DialogContentText>{text}</DialogContentText>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  label={label}
-                  type="text"
-                  fullWidth
-                  variant="filled"
-                  id="name"
-                  onChange={handleChange}
-                  color="secondary"
-                />
-              </DialogContent>
-              <DialogActions>
-                <Button
-                  onClick={handleDialog}
-                  variant="outlined"
-                  color="secondary"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => createToDoList(userId, values.name)}
-                  variant="contained"
-                  color="secondary"
-                  disabled={!isValid || !dirty}
-                >
-                  Add
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </Form>
+            <Form method="post">
+              <Dialog open={open} onClose={handleDialog}>
+                <DialogTitle>{title}</DialogTitle>
+                <DialogContent style={{ width: "30rem" }}>
+                  <DialogContentText>{text}</DialogContentText>
+                  <TextField
+                    value={values.name}
+                    autoFocus
+                    margin="dense"
+                    label={label}
+                    type="text"
+                    fullWidth
+                    variant="filled"
+                    id="name"
+                    onChange={handleChange}
+                    color="secondary"
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={handleDialog}
+                    variant="outlined"
+                    color="secondary"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={() => createToDoList(userId, values.name)}
+                    variant="contained"
+                    color="secondary"
+                    disabled={!isValid || !dirty}
+                  >
+                    Add
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </Form>
           </ThemeProvider>
         );
       }}

@@ -10,7 +10,6 @@ import {
 } from "@material-ui/core";
 import { Form, Formik } from "formik";
 import { useContext } from "react";
-import * as Yup from "yup";
 import SnackbarContext from "../../../contexts/SnackbarContext";
 import Task from "../../../models/Task";
 import TaskService from "../../../services/TaskService";
@@ -25,8 +24,6 @@ interface DialogProps {
   handleDialog: () => void;
   open: boolean;
   task: Task;
-  taskUpdated: boolean;
-  setTaskUpdated: (taskUpdated: boolean) => void;
 }
 const UpdateTaskDialog = ({
   title,
@@ -35,10 +32,9 @@ const UpdateTaskDialog = ({
   open,
   handleDialog,
   task,
-  taskUpdated,
-  setTaskUpdated,
 }: DialogProps) => {
   const { displaySnackbarMessage } = useContext(SnackbarContext);
+  console.log(task, "task");
   const updateTask = (task: Task, name: string) => {
     const updatedTask: Task = {
       id: task.id,
@@ -64,52 +60,46 @@ const UpdateTaskDialog = ({
         return (
           <ThemeProvider theme={theme}>
             <Form method="post">
-              <>
-                <Dialog open={open} onClose={handleDialog}>
-                  <DialogTitle>{title}</DialogTitle>
-                  <DialogContent style={{ width: "30rem" }}>
-                    <DialogContentText>{text}</DialogContentText>
-                    <TextField
-                      required
-                      autoFocus
-                      margin="dense"
-                      label={label}
-                      type="text"
-                      fullWidth
-                      variant="standard"
-                      id="name"
-                      color="secondary"
-                      onChange={handleChange}
-                      helperText={errors.name && dirty ? errors.name : ""}
-                      error={errors.name ? true : false}
-                    />
-                  </DialogContent>
-                  <DialogActions>
-                    <Button
-                      onClick={() => {
-                        resetForm();
-                        handleDialog();
-                      }}
-                      variant="outlined"
-                      color="secondary"
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        updateTask(task, values.name);
-                        setTaskUpdated(!taskUpdated);
-                        resetForm();
-                      }}
-                      variant="contained"
-                      disabled={!isValid || !dirty}
-                      color="secondary"
-                    >
-                      Add
-                    </Button>
-                  </DialogActions>
-                </Dialog>
-              </>
+              <Dialog open={open} onClose={handleDialog}>
+                <DialogTitle>{title}</DialogTitle>
+                <DialogContent style={{ width: "30rem" }}>
+                  <DialogContentText>{text}</DialogContentText>
+                  <TextField
+                    required
+                    autoFocus
+                    margin="dense"
+                    label={label}
+                    type="text"
+                    fullWidth
+                    variant="standard"
+                    id="name"
+                    onChange={handleChange}
+                    helperText={errors.name && dirty ? errors.name : ""}
+                    error={errors.name ? true : false}
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={() => {
+                      resetForm();
+                      handleDialog();
+                    }}
+                    variant="outlined"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      updateTask(task, values.name);
+                      resetForm();
+                    }}
+                    variant="contained"
+                    disabled={!isValid || !dirty}
+                  >
+                    Update
+                  </Button>
+                </DialogActions>
+              </Dialog>
             </Form>
           </ThemeProvider>
         );

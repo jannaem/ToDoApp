@@ -8,24 +8,26 @@ import {
   ThemeProvider,
 } from "@material-ui/core";
 import Task from "../../../models/Task";
+import TaskService from "../../../services/TaskService";
+import SnackbarContext from "../../../contexts/SnackbarContext";
+import { useContext } from "react";
 import theme from "../../../theme";
 
 interface DialogProps {
-  deleteAction: () => void;
   handleDialog: () => void;
   open: boolean;
   task: Task;
-  taskDeleted: boolean;
-  setTaskDeleted: (taskDeleted: boolean) => void;
 }
-const DeleteTaskDialog = ({
-  open,
-  handleDialog,
-  task,
-  taskDeleted,
-  setTaskDeleted,
-  deleteAction,
-}: DialogProps) => {
+const DeleteTaskDialog = ({ open, handleDialog, task }: DialogProps) => {
+  const { displaySnackbarMessage } = useContext(SnackbarContext);
+  const deleteTask = () => {
+    TaskService.deleteTask(task.id)
+      .then(() => {
+        displaySnackbarMessage("Task deleted successfully", "success");
+        handleDialog();
+      })
+      .catch(() => displaySnackbarMessage("Task deletion failed", "error"));
+  };
   return (
     <ThemeProvider theme={theme}>
       <Dialog open={open} onClose={handleDialog}>
@@ -49,9 +51,7 @@ const DeleteTaskDialog = ({
             autoFocus
             variant={"contained"}
             onClick={() => {
-              deleteAction();
-              setTaskDeleted(!taskDeleted);
-              handleDialog();
+              deleteTask();
             }}
             color={"secondary"}
             disabled={false}

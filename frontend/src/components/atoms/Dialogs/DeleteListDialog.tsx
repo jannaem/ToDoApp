@@ -15,24 +15,16 @@ import theme from "../../../theme";
 interface DialogProps {
   handleDialog: () => void;
   open: boolean;
-  list: string;
-  listDeleted: boolean;
-  setListDeleted: () => void;
+  list: ToDo;
 }
 
-const DeleteListDialog = ({
-  handleDialog,
-  open,
-  list,
-  listDeleted,
-  setListDeleted,
-}: DialogProps) => {
+const DeleteListDialog = ({ handleDialog, open, list }: DialogProps) => {
   const { displaySnackbarMessage } = useContext(SnackbarContext);
   const deleteList = () => {
-    ToDoListService.deleteToDoList(list)
+    ToDoListService.deleteToDoList(list.toDoListId)
       .then(() => {
         displaySnackbarMessage("List deleted successfully", "success");
-        console.log("is this even happening");
+        handleDialog();
       })
       .catch(() => displaySnackbarMessage("List deletion failed", "error"));
   };
@@ -58,10 +50,7 @@ const DeleteListDialog = ({
             autoFocus
             variant={"contained"}
             onClick={() => {
-              console.log(list);
               deleteList();
-              handleDialog();
-              setListDeleted();
             }}
             color={"secondary"}
           >

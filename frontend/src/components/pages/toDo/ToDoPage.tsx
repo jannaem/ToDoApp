@@ -1,6 +1,6 @@
 import { Avatar, Card, Grid, Typography } from "@material-ui/core";
 import { List, ListItem, ListItemAvatar, Button } from "@mui/material";
-
+import HelpIcon from '@mui/icons-material/Help';
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -28,43 +28,32 @@ const ToDoPage = () => {
   const [toDo, setToDo] = useState<ToDo>();
   const [lists, setLists] = useState<ToDo[]>([]);
   const [selectedToDo, setSelectedToDo] = useState<ToDo>({
-    id: "1234",
+    toDoListId: "1234",
     name: "default",
   });
-  const [taskDeleted, setTaskDeleted] = useState<boolean>(false);
-  const [taskUpdated, setTaskUpdated] = useState<boolean>(false);
   const [deleteModus, setDeleteModus] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [openFormDialog, setOpenFormDialog] = useState<boolean>(false);
   const [openTaskDialog, setTaskDialog] = useState<boolean>(false);
-  const [listUpdated, setListUpdated] = useState<boolean>(false);
-  const [listDeleted, setListDeleted] = useState<boolean>(false);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filterValue, setFilterValue] = useState("");
   const [prevFilterValue, setPrevFilterValue] = useState("");
   const [runTour, setRunTour] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
+  const [openDeleteListDialog, setOpenDeleteListDialog] = useState(false);
+  const [openUpdateListDialog, setOpenUpdateListDialog] = useState(false);
 
   const userId = "3";
-  const { displaySnackbarMessage } = useContext(SnackbarContext);
   const getLists = (userId: string) => {
-    ToDoListService.getAllLists(userId)
-      .then((res) => {
-        setLists(res);
-      })
-      .catch(() =>
-        displaySnackbarMessage("There was a technical error. Try again later!")
-      );
+    ToDoListService.getAllLists(userId).then((res) => {
+      setLists(res);
+    });
   };
   const getTasks = (listId: string) => {
-    ToDoListService.getToDoList(listId)
-      .then((res) => {
-        setTasks(res.tasks);
-      })
-      .catch(() =>
-        displaySnackbarMessage("There was a technical error. Try again later!")
-      );
+    ToDoListService.getToDoList(listId).then((res) => {
+      setTasks(res.tasks);
+    });
   };
 
   const handleDeleteButton = () => {
@@ -75,6 +64,12 @@ const ToDoPage = () => {
   };
   const handleUpdateTask = () => {
     setOpenUpdateDialog(!openUpdateDialog);
+  };
+  const handleDeleteList = () => {
+    setOpenDeleteListDialog(!openDeleteListDialog);
+  };
+  const handleUpdateList = () => {
+    setOpenUpdateListDialog(!openUpdateListDialog);
   };
   const handleDialog = () => {
     setOpen(!open);
@@ -87,31 +82,25 @@ const ToDoPage = () => {
   };
 
   useEffect(() => {
-    if (selectedToDo.id !== "1") {
-      getTasks(selectedToDo.id.toString());
+    if (selectedToDo.toDoListId !== "1234") {
+      getTasks(selectedToDo.toDoListId.toString());
     }
-  }, [
-    selectedToDo,
-    openTaskDialog,
-    taskUpdated,
-    taskDeleted,
-    openUpdateDialog,
-    openDeleteDialog,
-  ]);
-  useEffect(() => {
-    getTasks(selectedToDo.id);
-  }, [tasks]);
+  }, [selectedToDo, openTaskDialog, openUpdateDialog, openDeleteDialog]);
 
   useEffect(() => {
+    getLists(userId);
     if (
       (lists.length > 0 && selectedToDo.name === "default") ||
       lists.length === 1
     ) {
       setSelectedToDo(lists[0]);
-      getTasks(lists[0].id);
+      getTasks(lists[0].toDoListId);
     }
+  }, [userId, openFormDialog, open]);
+
+  useEffect(() => {
     getLists(userId);
-  }, [userId, openFormDialog, open, listUpdated, lists]);
+  }, [openUpdateListDialog, openDeleteListDialog]);
 
   const joyrideSteps: Step[] = [
     {
@@ -120,7 +109,7 @@ const ToDoPage = () => {
         <JoyrideContent
           title={"Choose a List"}
           body={
-            "Here are all of your ToDo lists displayed. To add tasks, edit the name of the list or delete list you can select the list you would like to edit."
+            "Here are all of your To Do lists displayed. To add tasks, edit the name of the list or delete list you can select the list you would like to edit."
           }
         />
       ),
@@ -146,7 +135,6 @@ const ToDoPage = () => {
       disableBeacon: true,
     },
   ];
-
   return (
     <Grid container>
       <JoyrideTour run={runTour} setRun={setRunTour} steps={joyrideSteps} />
@@ -208,6 +196,10 @@ const ToDoPage = () => {
             >
               To Do Lists
             </Typography>
+            <HelpIcon
+              onClick={()=>setRunTour(true)}
+              color="secondary"
+            />
           </ListItem>
         </List>
         <ToDoList
@@ -221,12 +213,10 @@ const ToDoPage = () => {
             setSelectedToDo(selectedTD);
           }}
           selectedToDo={selectedToDo}
-          listUpdated={listUpdated}
-          setListUpdated={() => setListUpdated(!listUpdated)}
-          listDeleted={listDeleted}
-          setListDeleted={() => {
-            setListDeleted(!listDeleted);
-          }}
+          handleUpdatedDialog={handleUpdateList}
+          openUpdate={openUpdateListDialog}
+          handleDeletedDialog={handleDeleteList}
+          openDelete={openDeleteListDialog}
         />
         <Button
           color={"primary"}
@@ -284,20 +274,17 @@ const ToDoPage = () => {
             <Grid item md={12} xs={12}>
               <TaskList
                 tasks={tasks}
-                taskDeleted={taskDeleted}
-                setTaskDeleted={setTaskDeleted}
-                taskUpdated={taskUpdated}
-                setTaskUpdated={setTaskUpdated}
                 handleUpdatedDialog={handleUpdateTask}
                 openUpdate={openUpdateDialog}
                 handleDeletedDialog={handleDeleteTask}
                 openDelete={openDeleteDialog}
               ></TaskList>
             </Grid>
-
-            <AddButton
-              onClick={() => setTaskDialog(!openTaskDialog)}
-            ></AddButton>
+            {lists.includes(selectedToDo) && (
+              <AddButton
+                onClick={() => setTaskDialog(!openTaskDialog)}
+              ></AddButton>
+            )}
           </Grid>
         </Grid>
       </Grid>
@@ -307,7 +294,7 @@ const ToDoPage = () => {
         text={"Enter the name of your new Task"}
         label={"Name"}
         handleDialog={handleTaskDialog}
-        listId={selectedToDo.id}
+        listId={selectedToDo.toDoListId}
       ></AddTaskDialog>
     </Grid>
   );
