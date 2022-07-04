@@ -7,12 +7,12 @@ import {
   DialogTitle,
   TextField,
 } from "@material-ui/core";
-import { Form, Formik, yupToFormErrors } from "formik";
+import { Form, Formik } from "formik";
 import ToDoDTO from "../../../models/ToDoDTO";
 import ToDoListService from "../../../services/ToDoListService";
 import * as Yup from "yup";
 import SnackbarContext from "../../../contexts/SnackbarContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 interface DialogProps {
   title: string;
   text: string;
@@ -59,7 +59,7 @@ const AddListDialog = ({
       validationSchema={validationSchema}
       initialValues={{ name: "" }}
     >
-      {({ values, handleChange, isValid, dirty }) => {
+      {({ values, handleChange, isValid, dirty, errors }) => {
         return (
           <Form method="post">
             <Dialog open={open} onClose={handleDialog}>
@@ -75,6 +75,8 @@ const AddListDialog = ({
                   variant="standard"
                   id="name"
                   onChange={handleChange}
+                  helperText={errors.name && dirty ? errors.name : ""}
+                  error={errors.name ? true : false}
                 />
               </DialogContent>
               <DialogActions>

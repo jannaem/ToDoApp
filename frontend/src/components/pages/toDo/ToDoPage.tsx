@@ -4,7 +4,7 @@ import { List, ListItem, ListItemAvatar, Button } from "@mui/material";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import AddListDialog from "../../atoms/Dialogs/AddListDialog";
 import { ToDo } from "../../../models/ToDo";
 import ToDoList from "../../atoms/ToDoList/ToDoList";
@@ -18,8 +18,6 @@ import AddButton from "../../atoms/AddButton/AddButton";
 import AddTaskDialog from "../../atoms/Dialogs/AddTaskDialog";
 import JoyrideTour from "../../atoms/JoyrideTour";
 import { Step } from "react-joyride";
-import SnackbarContext from "../../../contexts/SnackbarContext";
-import ApiService from "../../../services/ApiService";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthenticationContext";
 const ToDoPage = () => {
@@ -104,13 +102,11 @@ const ToDoPage = () => {
 
   const joyrideSteps: Step[] = [
     {
-      target: "#chooseAList",
+      target: "#addAList",
       content: (
         <JoyrideContent
-          title={"Choose a List"}
-          body={
-            "Here are all of your ToDo lists displayed. To add tasks, edit the name of the list or delete list you can select the list you would like to edit."
-          }
+          title={"Add a List"}
+          body={"By clicking this button you can add a new ToDo list."}
         />
       ),
       placement: "auto",
@@ -279,6 +275,7 @@ const ToDoPage = () => {
             </Grid>
             {selectedToDo.id !== "1234" && (
               <AddButton
+                id={"addAList"}
                 onClick={() => setTaskDialog(!openTaskDialog)}
               ></AddButton>
             )}
