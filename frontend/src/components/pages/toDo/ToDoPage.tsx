@@ -277,7 +277,7 @@ const ToDoPage = () => {
                 openDelete={openDeleteDialog}
               ></TaskList>
             </Grid>
-            {lists.includes(selectedToDo) && (
+            {selectedToDo.id !== "1234" && (
               <AddButton
                 onClick={() => setTaskDialog(!openTaskDialog)}
               ></AddButton>

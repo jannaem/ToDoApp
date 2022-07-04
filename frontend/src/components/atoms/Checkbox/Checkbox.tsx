@@ -45,7 +45,6 @@ const Checkbox = ({
     TaskService.updateTask(task.id, updatedTask)
       .then(() => {
         displaySnackbarMessage("Task updated successfully", "success");
-        console.log("is this even happening");
       })
       .catch(() => displaySnackbarMessage("Task update failed", "error"));
   };
@@ -59,7 +58,6 @@ const Checkbox = ({
               <FormControlLabel
                 control={
                   <MUICheckbox
-                    defaultChecked={task.status}
                     icon={<CircleUnchecked />}
                     checkedIcon={<CircleCheckedFilled />}
                     checked={checked}

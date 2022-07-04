@@ -39,7 +39,6 @@ const AddListDialog = ({
     ToDoListService.createToDoList(userId, newToDoList)
       .then(() => {
         displaySnackbarMessage("List created successfully", "success");
-        console.log("is this even happening");
         handleDialog();
       })
       .catch(() => displaySnackbarMessage("List creation failed", "error"));

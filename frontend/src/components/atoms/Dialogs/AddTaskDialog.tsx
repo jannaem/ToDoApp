@@ -41,7 +41,6 @@ const AddTaskDialog = ({
     TaskService.createTask(listId, newTask)
       .then(() => {
         displaySnackbarMessage("Task created successfully", "success");
-        console.log("is this even happening");
         handleDialog();
       })
       .catch(() => displaySnackbarMessage("Task creation failed", "error"));
