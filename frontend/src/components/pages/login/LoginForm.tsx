@@ -28,7 +28,7 @@ interface State {
 const LoginForm = () => {
   const navigation = useNavigate();
   const { displaySnackbarMessage } = useContext(SnackbarContext);
-  const {login} = useAuth();
+  const { login } = useAuth();
   const initialValues: FormModelLogin = { username: "", password: "" };
   const [pwdValues, setPwdValues] = useState<State>({
     password: "",
@@ -50,14 +50,13 @@ const LoginForm = () => {
 
   const handleSubmit = ({ username, password }: FormikValues) => {
     login(username, password)
-    .then(() => {
-      navigation("/toDoApp");
-      displaySnackbarMessage("Login war erfolgreich!", "success");
-    })
-    .catch((error) => {  
-      console.log("catch me outside how about that");
-      displaySnackbarMessage(error.response.data, "error");
-    });
+      .then(() => {
+        navigation("/toDoApp");
+        displaySnackbarMessage("Login war erfolgreich!", "success");
+      })
+      .catch((error) => {
+        displaySnackbarMessage(error.response.data, "error");
+      });
   };
 
   return (
@@ -67,8 +66,8 @@ const LoginForm = () => {
         handleSubmit(values);
       }}
     >
-      {({ values, errors, handleChange, isSubmitting}) => (
-      <Form>
+      {({ values, errors, handleChange, isSubmitting }) => (
+        <Form>
           <Grid container className={"loginForm"}>
             <Paper variant={"elevation"} elevation={5} className={"form"}>
               <Grid item>
@@ -160,7 +159,7 @@ const LoginForm = () => {
             </Paper>
           </Grid>
         </Form>
-    )}
+      )}
     </Formik>
   );
 };
