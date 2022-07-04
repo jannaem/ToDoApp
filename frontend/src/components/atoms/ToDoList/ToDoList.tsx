@@ -16,10 +16,10 @@ interface toDoListProps {
   setDeleteToDo: (id: ToDo) => void;
   setSelectedToDo: (id: ToDo) => void;
   selectedToDo: ToDo;
-  listUpdated: boolean;
-  setListUpdated: (listUpdate: boolean) => void;
-  listDeleted: boolean;
-  setListDeleted: (listDeleted: boolean) => void;
+  openUpdate: boolean;
+  handleUpdatedDialog: (openUpdated: boolean) => void;
+  openDelete: boolean;
+  handleDeletedDialog: (openDeleted: boolean) => void;
 }
 
 const ToDoList = ({
@@ -29,13 +29,11 @@ const ToDoList = ({
   setDeleteToDo,
   setSelectedToDo,
   selectedToDo,
-  listUpdated,
-  setListUpdated,
-  listDeleted,
-  setListDeleted,
+  openUpdate,
+  handleDeletedDialog,
+  openDelete,
+  handleUpdatedDialog,
 }: toDoListProps) => {
-  const [open, setOpen] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
   const [selectedList, setSelectedList] = useState<ToDo>({
     id: "",
     name: "",
@@ -57,8 +55,7 @@ const ToDoList = ({
                       aria-label="delete"
                       onClick={() => {
                         setSelectedList(toDo);
-                        setOpen(!open);
-                        setListUpdated(!listUpdated);
+                        handleUpdatedDialog(true);
                       }}
                     >
                       <EditIcon />
@@ -69,7 +66,7 @@ const ToDoList = ({
                       aria-label="delete"
                       onClick={() => {
                         setSelectedList(toDo);
-                        setOpenDelete(true);
+                        handleDeletedDialog(true);
                       }}
                     >
                       <DeleteIcon />
@@ -81,17 +78,13 @@ const ToDoList = ({
                   text={"Enter the new name of the ToDO list"}
                   label={"Name"}
                   list={selectedList}
-                  listUpdated={listUpdated}
-                  setListUpdated={() => setListUpdated}
-                  setOpen={setOpen}
-                  open={open}
+                  setOpen={() => handleUpdatedDialog(openUpdate)}
+                  open={openUpdate}
                 ></UpdateListDialog>
                 <DeleteListDialog
-                  handleDialog={() => setOpenDelete(!openDelete)}
+                  handleDialog={() => handleDeletedDialog(openDelete)}
                   open={openDelete}
-                  list={selectedList.id}
-                  listDeleted={listDeleted}
-                  setListDeleted={() => setListDeleted}
+                  list={selectedList}
                 ></DeleteListDialog>
               </>
             }

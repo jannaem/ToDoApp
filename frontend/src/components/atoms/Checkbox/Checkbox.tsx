@@ -18,10 +18,6 @@ import SnackbarContext from "../../../contexts/SnackbarContext";
 
 interface CheckBoxProps {
   task: Task;
-  taskDeleted: boolean;
-  setTaskDeleted: () => void;
-  taskUpdated: boolean;
-  setTaskUpdated: () => void;
   openUpdate: boolean;
   handleUpdatedDialog: (openUpdated: boolean) => void;
   openDelete: boolean;
@@ -29,10 +25,6 @@ interface CheckBoxProps {
 }
 const Checkbox = ({
   task,
-  taskDeleted,
-  setTaskDeleted,
-  taskUpdated,
-  setTaskUpdated,
   openUpdate,
   handleUpdatedDialog,
   openDelete,
@@ -88,7 +80,6 @@ const Checkbox = ({
                 aria-label="delete"
                 onClick={() => {
                   handleUpdatedDialog(true);
-                  setTaskUpdated();
                 }}
               >
                 <EditIcon />
@@ -101,7 +92,6 @@ const Checkbox = ({
                 aria-label="delete"
                 onClick={() => {
                   handleDeletedDialog(true);
-                  setTaskDeleted();
                 }}
               >
                 <DeleteIcon />
@@ -113,19 +103,7 @@ const Checkbox = ({
       <DeleteTaskDialog
         open={openDelete}
         handleDialog={() => handleDeletedDialog(openDelete)}
-        deleteAction={() => {
-          TaskService.deleteTask(task.id)
-            .then(() => {
-              displaySnackbarMessage("Task deleted successfully", "success");
-              console.log("is this even happening");
-            })
-            .catch(() =>
-              displaySnackbarMessage("Task deletion failed", "error")
-            );
-        }}
         task={task}
-        setTaskDeleted={setTaskDeleted}
-        taskDeleted={taskDeleted}
       ></DeleteTaskDialog>
       <UpdateTaskDialog
         title={"Edit task name"}
@@ -134,8 +112,6 @@ const Checkbox = ({
         handleDialog={() => handleUpdatedDialog(openUpdate)}
         open={openUpdate}
         task={task}
-        taskUpdated={taskUpdated}
-        setTaskUpdated={setTaskUpdated}
       ></UpdateTaskDialog>
     </>
   );

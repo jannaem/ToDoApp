@@ -31,40 +31,29 @@ const ToDoPage = () => {
     id: "1234",
     name: "default",
   });
-  const [taskDeleted, setTaskDeleted] = useState<boolean>(false);
-  const [taskUpdated, setTaskUpdated] = useState<boolean>(false);
   const [deleteModus, setDeleteModus] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [openFormDialog, setOpenFormDialog] = useState<boolean>(false);
   const [openTaskDialog, setTaskDialog] = useState<boolean>(false);
-  const [listUpdated, setListUpdated] = useState<boolean>(false);
-  const [listDeleted, setListDeleted] = useState<boolean>(false);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filterValue, setFilterValue] = useState("");
   const [prevFilterValue, setPrevFilterValue] = useState("");
   const [runTour, setRunTour] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
+  const [openDeleteListDialog, setOpenDeleteListDialog] = useState(false);
+  const [openUpdateListDialog, setOpenUpdateListDialog] = useState(false);
 
   const userId = "3";
-  const { displaySnackbarMessage } = useContext(SnackbarContext);
   const getLists = (userId: string) => {
-    ToDoListService.getAllLists(userId)
-      .then((res) => {
-        setLists(res);
-      })
-      .catch(() =>
-        displaySnackbarMessage("There was a technical error. Try again later!")
-      );
+    ToDoListService.getAllLists(userId).then((res) => {
+      setLists(res);
+    });
   };
   const getTasks = (listId: string) => {
-    ToDoListService.getToDoList(listId)
-      .then((res) => {
-        setTasks(res.tasks);
-      })
-      .catch(() =>
-        displaySnackbarMessage("There was a technical error. Try again later!")
-      );
+    ToDoListService.getToDoList(listId).then((res) => {
+      setTasks(res.tasks);
+    });
   };
 
   const handleDeleteButton = () => {
@@ -75,6 +64,12 @@ const ToDoPage = () => {
   };
   const handleUpdateTask = () => {
     setOpenUpdateDialog(!openUpdateDialog);
+  };
+  const handleDeleteList = () => {
+    setOpenDeleteListDialog(!openDeleteListDialog);
+  };
+  const handleUpdateList = () => {
+    setOpenUpdateListDialog(!openUpdateListDialog);
   };
   const handleDialog = () => {
     setOpen(!open);
@@ -87,22 +82,13 @@ const ToDoPage = () => {
   };
 
   useEffect(() => {
-    if (selectedToDo.id !== "1") {
+    if (selectedToDo.id !== "1234") {
       getTasks(selectedToDo.id.toString());
     }
-  }, [
-    selectedToDo,
-    openTaskDialog,
-    taskUpdated,
-    taskDeleted,
-    openUpdateDialog,
-    openDeleteDialog,
-  ]);
-  useEffect(() => {
-    getTasks(selectedToDo.id);
-  }, [tasks]);
+  }, [selectedToDo, openTaskDialog, openUpdateDialog, openDeleteDialog]);
 
   useEffect(() => {
+    getLists(userId);
     if (
       (lists.length > 0 && selectedToDo.name === "default") ||
       lists.length === 1
@@ -110,8 +96,11 @@ const ToDoPage = () => {
       setSelectedToDo(lists[0]);
       getTasks(lists[0].id);
     }
+  }, [userId, openFormDialog, open]);
+
+  useEffect(() => {
     getLists(userId);
-  }, [userId, openFormDialog, open, listUpdated, lists]);
+  }, [openUpdateListDialog, openDeleteListDialog]);
 
   const joyrideSteps: Step[] = [
     {
@@ -221,12 +210,10 @@ const ToDoPage = () => {
             setSelectedToDo(selectedTD);
           }}
           selectedToDo={selectedToDo}
-          listUpdated={listUpdated}
-          setListUpdated={() => setListUpdated(!listUpdated)}
-          listDeleted={listDeleted}
-          setListDeleted={() => {
-            setListDeleted(!listDeleted);
-          }}
+          handleUpdatedDialog={handleUpdateList}
+          openUpdate={openUpdateListDialog}
+          handleDeletedDialog={handleDeleteList}
+          openDelete={openDeleteListDialog}
         />
         <Button
           color={"primary"}
@@ -284,20 +271,17 @@ const ToDoPage = () => {
             <Grid item md={12} xs={12}>
               <TaskList
                 tasks={tasks}
-                taskDeleted={taskDeleted}
-                setTaskDeleted={setTaskDeleted}
-                taskUpdated={taskUpdated}
-                setTaskUpdated={setTaskUpdated}
                 handleUpdatedDialog={handleUpdateTask}
                 openUpdate={openUpdateDialog}
                 handleDeletedDialog={handleDeleteTask}
                 openDelete={openDeleteDialog}
               ></TaskList>
             </Grid>
-
-            <AddButton
-              onClick={() => setTaskDialog(!openTaskDialog)}
-            ></AddButton>
+            {lists.includes(selectedToDo) && (
+              <AddButton
+                onClick={() => setTaskDialog(!openTaskDialog)}
+              ></AddButton>
+            )}
           </Grid>
         </Grid>
       </Grid>

@@ -21,9 +21,7 @@ interface DialogProps {
   text: string;
   label: string;
   list: ToDo;
-  listUpdated: boolean;
-  setListUpdated: () => void;
-  setOpen: (open: boolean) => void;
+  setOpen: () => void;
   open: boolean;
 }
 const UpdateListDialog = ({
@@ -31,8 +29,6 @@ const UpdateListDialog = ({
   text,
   label,
   list,
-  listUpdated,
-  setListUpdated,
   setOpen,
   open,
 }: DialogProps) => {
@@ -46,7 +42,7 @@ const UpdateListDialog = ({
     ToDoListService.updateToDoList(list.id, updatedToDoList)
       .then(() => {
         displaySnackbarMessage("List updated successfully", "success");
-        console.log("is this even happening");
+        setOpen();
       })
       .catch(() => displaySnackbarMessage("List update failed", "error"));
   };
@@ -81,8 +77,8 @@ const UpdateListDialog = ({
               <DialogActions>
                 <Button
                   onClick={() => {
+                    setOpen();
                     resetForm();
-                    setOpen(!open);
                   }}
                   variant="outlined"
                 >
@@ -91,8 +87,7 @@ const UpdateListDialog = ({
                 <Button
                   onClick={() => {
                     updateToDoList(values.name);
-                    setListUpdated();
-                    setOpen(false);
+
                     resetForm();
                   }}
                   variant="contained"
