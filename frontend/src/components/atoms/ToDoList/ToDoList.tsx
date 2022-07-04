@@ -25,8 +25,6 @@ interface toDoListProps {
 const ToDoList = ({
   toDos,
   deleteModus,
-  handleDialog,
-  setDeleteToDo,
   setSelectedToDo,
   selectedToDo,
   openUpdate,
@@ -73,19 +71,6 @@ const ToDoList = ({
                     </IconButton>
                   </>
                 ) : null}
-                <UpdateListDialog
-                  title={"Edit To DO list"}
-                  text={"Enter the new name of the ToDO list"}
-                  label={"Name"}
-                  list={toDo}
-                  setOpen={() => handleUpdatedDialog(openUpdate)}
-                  open={openUpdate}
-                ></UpdateListDialog>
-                <DeleteListDialog
-                  handleDialog={() => handleDeletedDialog(openDelete)}
-                  open={openDelete}
-                  list={toDo}
-                ></DeleteListDialog>
               </>
             }
             className={selectedToDo.toDoListId === toDo.toDoListId ? "selectedToDo" : "toDo"}
@@ -96,6 +81,19 @@ const ToDoList = ({
           </ListItem>
         ))}
       </List>
+      <UpdateListDialog
+        title={"Edit To DO list"}
+        text={"Enter the new name of the ToDO list"}
+        label={"Name"}
+        list={selectedList}
+        setOpen={() => handleUpdatedDialog(openUpdate)}
+        open={openUpdate}
+      ></UpdateListDialog>
+      <DeleteListDialog
+        handleDialog={() => handleDeletedDialog(openDelete)}
+        open={openDelete}
+        list={selectedList}
+      ></DeleteListDialog>
     </>
   );
 };

@@ -29,7 +29,7 @@ interface State {
 const Login = () => {
   const navigation = useNavigate();
   const { displaySnackbarMessage } = useContext(SnackbarContext);
-  const {login} = useAuth();
+  const { login } = useAuth();
   const initialValues: FormModelLogin = { username: "", password: "" };
   const [pwdValues, setPwdValues] = useState<State>({
     password: "",
@@ -175,7 +175,7 @@ const Login = () => {
             </Paper>
           </Grid>
         </Form>
-    )}
+      )}
     </Formik>
   );
 };

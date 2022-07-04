@@ -34,7 +34,6 @@ const UpdateTaskDialog = ({
   task,
 }: DialogProps) => {
   const { displaySnackbarMessage } = useContext(SnackbarContext);
-  console.log(task, "task");
   const updateTask = (task: Task, name: string) => {
     const updatedTask: Task = {
       id: task.id,

@@ -1,6 +1,6 @@
 import React from "react";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
-import { useTheme } from "@material-ui/core";
+import theme from "../../theme";
 
 type JoyrideTourProps = {
   /**
@@ -36,7 +36,6 @@ const JoyrideTour = ({
   setRun,
   steps = [],
 }: JoyrideTourProps) => {
-  const theme = useTheme();
   const handleJoyrideCallback = ({ status }: CallBackProps) => {
     // Define all statuses when the joyride should stop running.
     const stopStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
@@ -61,7 +60,7 @@ const JoyrideTour = ({
       }}
       styles={{
         options: {
-          arrowColor: theme.palette.common.white,
+          arrowColor: theme.palette.primary.contrastText,
           primaryColor: theme.palette.secondary.main,
           textColor: theme.palette.primary.dark,
           width: 500,

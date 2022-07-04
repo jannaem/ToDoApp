@@ -31,5 +31,17 @@ const theme = createTheme({
       color:"#69CABC",
     }
   },
+  components:{
+    MuiInputBase: {
+      styleOverrides: {
+          input: {
+            borderColor:"black",
+              '::before': {
+                  borderBottom:"#000",
+              }
+          }
+      }
+  }
+  }
 });
 export default theme;

@@ -5,9 +5,10 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  makeStyles,
   TextField,
+  ThemeProvider,
 } from "@material-ui/core";
-import { ThemeProvider } from "@mui/material";
 import { Form, Formik } from "formik";
 import { useContext } from "react";
 import * as Yup from "yup";
@@ -43,7 +44,6 @@ const AddTaskDialog = ({
     TaskService.createTask(listId, newTask)
       .then(() => {
         displaySnackbarMessage("Task created successfully", "success");
-        console.log("is this even happening");
         handleDialog();
       })
       .catch(() => displaySnackbarMessage("Task creation failed", "error"));
@@ -73,13 +73,19 @@ const AddTaskDialog = ({
                   <DialogContent style={{ width: "30rem" }}>
                     <DialogContentText>{text}</DialogContentText>
                     <TextField
+                    InputProps={{
+                      classes: {
+                         root: "textfield",
+                         disabled: "disabled",
+                         notchedOutline: "notchedOutline"
+                      }
+                   }}
                       color="secondary"
-                      autoFocus
                       margin="dense"
                       label={label}
                       type="text"
                       fullWidth
-                      variant="standard"
+                      variant="outlined"
                       id="name"
                       onChange={handleChange}
                       helperText={errors.name && dirty ? errors.name : ""}
@@ -119,3 +125,4 @@ const AddTaskDialog = ({
   );
 };
 export default AddTaskDialog;
+
