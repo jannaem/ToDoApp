@@ -21,19 +21,24 @@ const TaskList = ({
 }: TaskListProps) => {
   return (
     <List id={"tasklist"}>
-      {tasks.map((task: Task) => (
-        <ListItem id={"task"} disablePadding key={task.id}>
-          <Grid item md={12} xs={12}>
-            <Checkbox
-              task={task}
-              handleUpdatedDialog={handleUpdatedDialog}
-              openUpdate={openUpdate}
-              handleDeletedDialog={handleDeletedDialog}
-              openDelete={openDelete}
-            ></Checkbox>
-          </Grid>
-        </ListItem>
-      ))}
+      <>
+        {" "}
+        {console.log(tasks.length)}
+        {tasks.length < 1 && "No tasks created yet."}
+        {tasks.map((task: Task) => (
+          <ListItem id={"task"} disablePadding key={task.id}>
+            <Grid item md={12} xs={12}>
+              <Checkbox
+                task={task}
+                handleUpdatedDialog={handleUpdatedDialog}
+                openUpdate={openUpdate}
+                handleDeletedDialog={handleDeletedDialog}
+                openDelete={openDelete}
+              ></Checkbox>
+            </Grid>
+          </ListItem>
+        ))}
+      </>
     </List>
   );
 };

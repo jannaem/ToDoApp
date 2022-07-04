@@ -8,7 +8,7 @@ import {
   TextField,
 } from "@material-ui/core";
 import { createTheme } from "@mui/material";
-import { Form, Formik, yupToFormErrors } from "formik";
+import { Form, Formik } from "formik";
 import { useContext } from "react";
 import * as Yup from "yup";
 import SnackbarContext from "../../../contexts/SnackbarContext";
@@ -41,12 +41,10 @@ const AddTaskDialog = ({
     TaskService.createTask(listId, newTask)
       .then(() => {
         displaySnackbarMessage("Task created successfully", "success");
-        console.log("is this even happening");
         handleDialog();
       })
       .catch(() => displaySnackbarMessage("Task creation failed", "error"));
   };
-  const classes = createTheme();
   const validationSchema = Yup.object().shape({
     name: Yup.string()
       .trim()
