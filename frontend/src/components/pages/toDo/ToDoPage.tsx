@@ -1,6 +1,6 @@
 import { Avatar, Card, Grid, Typography } from "@material-ui/core";
 import { List, ListItem, ListItemAvatar, Button } from "@mui/material";
-import HelpIcon from '@mui/icons-material/Help';
+import HelpIcon from "@mui/icons-material/Help";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -34,13 +34,12 @@ const ToDoPage = () => {
   const [openFormDialog, setOpenFormDialog] = useState<boolean>(false);
   const [openTaskDialog, setTaskDialog] = useState<boolean>(false);
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [filterValue, setFilterValue] = useState("");
-  const [prevFilterValue, setPrevFilterValue] = useState("");
   const [runTour, setRunTour] = useState<boolean>(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [openUpdateDialog, setOpenUpdateDialog] = useState(false);
   const [openDeleteListDialog, setOpenDeleteListDialog] = useState(false);
   const [openUpdateListDialog, setOpenUpdateListDialog] = useState(false);
+  const [steps, setSteps] = useState(false);
 
   const userId = "3";
   const getLists = (userId: string) => {
@@ -100,7 +99,7 @@ const ToDoPage = () => {
     getLists(userId);
   }, [openUpdateListDialog, openDeleteListDialog]);
 
-  const joyrideSteps: Step[] = [
+  const joyrideStepsForList: Step[] = [
     {
       target: "#addAList",
       content: (
@@ -113,27 +112,75 @@ const ToDoPage = () => {
       disableBeacon: true,
     },
     {
-      target: "#deleteAList",
-      content: <JoyrideContent title={"Step 2"} body={" "} />,
+      target: "#deleteupdateAList",
+      content: (
+        <JoyrideContent
+          title={"Delete or Edit ToDo List"}
+          body={
+            "By clicking on the edit mode you enable the buttons responsible for editing and deleting each list.\n To edit simply click the edit button and enter the new name of the list.\n Delete lists by clicking on the trash can and confirming your action!"
+          }
+        />
+      ),
       placement: "auto",
       disableBeacon: true,
     },
+  ];
+  const joyrideStepsForTask: Step[] = [
     {
       target: "#addATask",
-      content: <JoyrideContent title={"Step 3"} body={" "} />,
+      content: (
+        <JoyrideContent
+          title={"Add a Task"}
+          body={"By clicking this button you can add a new ToDo task."}
+        />
+      ),
       placement: "auto",
       disableBeacon: true,
     },
     {
-      target: "#tableSearchField",
-      content: <JoyrideContent title={"Step 4"} body={" "} />,
+      target: "#deleteATask",
+      content: (
+        <JoyrideContent
+          title={"Delete a Task"}
+          body={"To delete the task simply click on the trash can icon."}
+        />
+      ),
+      placement: "auto",
+      disableBeacon: true,
+    },
+    {
+      target: "#renameATask",
+      content: (
+        <JoyrideContent
+          title={"Rename a Task"}
+          body={
+            "If you would like to rename a task you can click on the edit button and enter the new name of the task"
+          }
+        />
+      ),
+      placement: "auto",
+      disableBeacon: true,
+    },
+    {
+      target: "#updateState",
+      content: (
+        <JoyrideContent
+          title={"Update the state of a Task"}
+          body={'To set a task to either "done" or "to do " click here.'}
+        />
+      ),
       placement: "auto",
       disableBeacon: true,
     },
   ];
   return (
     <Grid container>
-      <JoyrideTour run={runTour} setRun={setRunTour} steps={joyrideSteps} />
+      <JoyrideTour
+        run={runTour}
+        setRun={setRunTour}
+        steps={steps ? joyrideStepsForTask : joyrideStepsForList}
+        setSteps={setSteps}
+      />
       <Grid item md={5} xs={12} direction={"column"}>
         <List>
           <Card id={"logOutCard"}>
@@ -166,12 +213,13 @@ const ToDoPage = () => {
             secondaryAction={
               deleteModus === false ? (
                 <Button
+                  id={"deleteupdateAList"}
                   variant="outlined"
                   color="secondary"
                   endIcon={<DeleteIcon />}
                   onClick={handleDeleteButton}
                 >
-                  edit modus
+                  edit mode
                 </Button>
               ) : (
                 <Button
@@ -192,10 +240,7 @@ const ToDoPage = () => {
             >
               To Do Lists
             </Typography>
-            <HelpIcon
-              onClick={()=>setRunTour(true)}
-              color="secondary"
-            />
+            <HelpIcon onClick={() => setRunTour(true)} color="secondary" />
           </ListItem>
         </List>
         <ToDoList
@@ -215,6 +260,7 @@ const ToDoPage = () => {
           openDelete={openDeleteListDialog}
         />
         <Button
+          id={"addAList"}
           color={"primary"}
           variant={"contained"}
           className={"button"}
@@ -236,34 +282,27 @@ const ToDoPage = () => {
       <Grid item md={7} xs={12} direction={"column"} id={"toDo"}>
         <Grid container direction="row" id={"taskContainer"}>
           <Grid container></Grid>
-          <Grid item md={8}>
+          <Grid item md={11}>
             <Typography
               component="h1"
               align={"left"}
               variant="h3"
               className={"text"}
+              style={{ margin: "-1.1rem" }}
             >
               Todo{" "}
             </Typography>
-          </Grid>
-          <Grid item md={4}>
-            <SearchField
-              id={""}
-              variant={"standard"}
-              type={""}
-              placeholder={"Enter task name..."}
-              margin={"none"}
-              label={""}
-              disabled={false}
-              name={""}
-              searchTerm={filterValue}
-              setSearchTerm={(searchTerm) =>
-                setFilterValue((prev) => {
-                  setPrevFilterValue(prev);
-                  return searchTerm;
-                })
-              }
-            ></SearchField>
+          </Grid>{" "}
+          <Grid item md={1}>
+            {tasks.length > 0 && (
+              <HelpIcon
+                onClick={() => {
+                  setSteps(true);
+                  setRunTour(true);
+                }}
+                color="secondary"
+              />
+            )}
           </Grid>
           <Grid item md={3}></Grid>{" "}
           <Grid container>
@@ -278,6 +317,7 @@ const ToDoPage = () => {
             </Grid>
             {selectedToDo.toDoListId !== "1234" && (
               <AddButton
+                id={"addATask"}
                 onClick={() => setTaskDialog(!openTaskDialog)}
               ></AddButton>
             )}

@@ -1,12 +1,13 @@
 import { Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 interface AddButtonProps {
+  id: string;
   onClick: () => void;
 }
-const AddButton = ({ onClick }: AddButtonProps) => {
+const AddButton = ({ onClick, id }: AddButtonProps) => {
   return (
     <Fab
-      id="Button"
+      id={id}
       style={{
         background: "#69CABC",
         width: "100%",
