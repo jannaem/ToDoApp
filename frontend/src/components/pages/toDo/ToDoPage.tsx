@@ -130,8 +130,6 @@ const ToDoPage = () => {
       placement: "auto",
       disableBeacon: true,
     },
-  ];
-  const joyrideStepsForTask: Step[] = [
     {
       target: "#addATask",
       content: (
@@ -143,6 +141,8 @@ const ToDoPage = () => {
       placement: "auto",
       disableBeacon: true,
     },
+  ];
+  const joyrideStepsForTask: Step[] = [
     {
       target: "#deleteATask",
       content: (
