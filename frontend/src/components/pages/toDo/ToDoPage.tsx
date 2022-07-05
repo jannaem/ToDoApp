@@ -22,7 +22,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthenticationContext";
 const ToDoPage = () => {
   const navigation = useNavigate();
-  const { logout } = useAuth();
+  const { logout, principal } = useAuth();
   const [toDo, setToDo] = useState<ToDo>();
   const [lists, setLists] = useState<ToDo[]>([]);
   const [selectedToDo, setSelectedToDo] = useState<ToDo>({
@@ -201,10 +201,10 @@ const ToDoPage = () => {
                 }
               >
                 <ListItemAvatar>
-                  <Avatar id={"avatar"}>UN</Avatar>
+                  <Avatar id={"avatar"}>{principal?.username.charAt(0).toUpperCase() +""+ principal?.username.charAt(1).toUpperCase()}</Avatar>
                 </ListItemAvatar>
                 <Typography component="h1" variant="h5" className={"text"}>
-                  dfgdsfsg
+                  {principal?.username}
                 </Typography>
               </ListItem>
             </ListItem>
