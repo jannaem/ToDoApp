@@ -12,7 +12,8 @@
 }
 
 #list {
-  max-height: fit-content;
+  max-height: 74vh;
+  min-height: 74vh;
   overflow: auto;
   background: #b2ecd73a;
   font-family: monospace;

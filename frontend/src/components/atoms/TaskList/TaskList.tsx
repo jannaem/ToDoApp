@@ -9,6 +9,7 @@ import ListItem from "@mui/material/ListItem";
 import { Task } from "../../../models/Task";
 import "../TaskList/TaskListStyle.css";
 import Checkbox from "../Checkbox/Checkbox";
+import AssignmentIcon from "@mui/icons-material/Assignment";
 
 interface TaskListProps {
   tasks: Task[];
@@ -29,9 +30,16 @@ const TaskList = ({
     <List id={"tasklist"}>
       <>
         {tasks.length < 1 && (
-          <Typography align="center" style={{ margin: "2rem" }}>
-            No tasks created yet.
-          </Typography>
+          <>
+            <AssignmentIcon
+              color="primary"
+              fontSize="large"
+              className={"svg_icons"}
+            ></AssignmentIcon>
+            <Typography align="center" style={{ margin: "2rem" }}>
+              No tasks created yet.
+            </Typography>
+          </>
         )}
         {tasks.map((task: Task) => (
           <ListItem id={"task"} disablePadding key={task.id}>

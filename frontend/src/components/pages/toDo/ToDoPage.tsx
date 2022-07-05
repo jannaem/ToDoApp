@@ -91,6 +91,7 @@ const ToDoPage = () => {
       lists.length === 1
     ) {
       setSelectedToDo(lists[0]);
+      console.log(selectedToDo);
       getTasks(lists[0].toDoListId);
     }
   }, [userId, openFormDialog, open]);
@@ -98,6 +99,11 @@ const ToDoPage = () => {
   useEffect(() => {
     getLists(userId);
   }, [openUpdateListDialog, openDeleteListDialog]);
+  useEffect(() => {
+    if (lists.length > 0) {
+      setSelectedToDo(lists[0]);
+    }
+  }, [lists]);
 
   const joyrideStepsForList: Step[] = [
     {
