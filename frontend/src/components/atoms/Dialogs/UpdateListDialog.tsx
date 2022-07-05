@@ -16,6 +16,7 @@ import { useContext } from "react";
 import SnackbarContext from "../../../contexts/SnackbarContext";
 import { DialogFormValidation } from "../../Validation";
 import theme from "../../../theme";
+import "./TaskDialog.css";
 
 interface DialogProps {
   title: string;
@@ -63,17 +64,21 @@ const UpdateListDialog = ({
                 <DialogContent style={{ width: "30rem" }}>
                   <DialogContentText>{text}</DialogContentText>
                   <TextField
+                    defaultValue={list.name}
                     required
                     autoFocus
                     margin="dense"
                     label={label}
                     type="text"
                     fullWidth
-                    variant="standard"
+                    variant="outlined"
                     id="name"
                     onChange={handleChange}
                     helperText={errors.name && dirty ? errors.name : ""}
                     error={errors.name ? true : false}
+                    InputProps={{
+                      classes: { notchedOutline: "specialOutline" },
+                    }}
                   />
                 </DialogContent>
                 <DialogActions>
@@ -83,17 +88,18 @@ const UpdateListDialog = ({
                       resetForm();
                     }}
                     variant="outlined"
+                    color="secondary"
                   >
                     Cancel
                   </Button>
                   <Button
                     onClick={() => {
                       updateToDoList(values.name);
-
                       resetForm();
                     }}
                     variant="contained"
                     disabled={!isValid || !dirty}
+                    color="secondary"
                   >
                     Update
                   </Button>

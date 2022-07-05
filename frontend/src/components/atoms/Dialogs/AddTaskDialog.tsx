@@ -16,6 +16,7 @@ import SnackbarContext from "../../../contexts/SnackbarContext";
 import Task from "../../../models/Task";
 import TaskService from "../../../services/TaskService";
 import theme from "../../../theme";
+import "./TaskDialog.css";
 
 interface DialogProps {
   title: string;
@@ -73,13 +74,6 @@ const AddTaskDialog = ({
                   <DialogContent style={{ width: "30rem" }}>
                     <DialogContentText>{text}</DialogContentText>
                     <TextField
-                      InputProps={{
-                        classes: {
-                          root: "textfield",
-                          disabled: "disabled",
-                          notchedOutline: "notchedOutline",
-                        },
-                      }}
                       color="secondary"
                       margin="dense"
                       label={label}
@@ -90,6 +84,9 @@ const AddTaskDialog = ({
                       onChange={handleChange}
                       helperText={errors.name && dirty ? errors.name : ""}
                       error={errors.name ? true : false}
+                      InputProps={{
+                        classes: { notchedOutline: "specialOutline" },
+                      }}
                     />
                   </DialogContent>
                   <DialogActions>

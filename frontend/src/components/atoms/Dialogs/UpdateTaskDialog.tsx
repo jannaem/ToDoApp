@@ -47,7 +47,7 @@ const UpdateTaskDialog = ({
       })
       .catch(() => displaySnackbarMessage("Task update failed", "error"));
   };
-
+  console.log(task, "task");
   return (
     <Formik
       enableReinitialize
@@ -64,17 +64,21 @@ const UpdateTaskDialog = ({
                 <DialogContent style={{ width: "30rem" }}>
                   <DialogContentText>{text}</DialogContentText>
                   <TextField
+                    defaultValue={task.name}
                     required
                     autoFocus
                     margin="dense"
                     label={label}
                     type="text"
                     fullWidth
-                    variant="standard"
+                    variant="outlined"
                     id="name"
                     onChange={handleChange}
                     helperText={errors.name && dirty ? errors.name : ""}
                     error={errors.name ? true : false}
+                    InputProps={{
+                      classes: { notchedOutline: "specialOutline" },
+                    }}
                   />
                 </DialogContent>
                 <DialogActions>
@@ -84,6 +88,7 @@ const UpdateTaskDialog = ({
                       handleDialog();
                     }}
                     variant="outlined"
+                    color="secondary"
                   >
                     Cancel
                   </Button>
@@ -94,6 +99,7 @@ const UpdateTaskDialog = ({
                     }}
                     variant="contained"
                     disabled={!isValid || !dirty}
+                    color="secondary"
                   >
                     Update
                   </Button>

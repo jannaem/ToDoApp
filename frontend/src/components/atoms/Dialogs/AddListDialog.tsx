@@ -15,6 +15,7 @@ import * as Yup from "yup";
 import SnackbarContext from "../../../contexts/SnackbarContext";
 import { useContext } from "react";
 import theme from "../../../theme";
+import "./TaskDialog.css";
 interface DialogProps {
   title: string;
   text: string;
@@ -66,45 +67,48 @@ const AddListDialog = ({
       {({ values, handleChange, isValid, dirty, errors }) => {
         return (
           <ThemeProvider theme={theme}>
-          <Form method="post">
-            <Dialog open={open} onClose={handleDialog}>
-              <DialogTitle>{title}</DialogTitle>
-              <DialogContent style={{ width: "30rem" }}>
-                <DialogContentText>{text}</DialogContentText>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  label={label}
-                  type="text"
-                  fullWidth
-                  variant="standard"
-                  id="name"
-                  onChange={handleChange}
-                  helperText={errors.name && dirty ? errors.name : ""}
-                  error={errors.name ? true : false}
-                  color="secondary"
-                />
-              </DialogContent>
-              <DialogActions>
-                <Button
-                  onClick={handleDialog}
-                  variant="outlined"
-                  className={"cancelButton"}
-                  color="secondary"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => createToDoList(userId, values.name)}
-                  variant="contained"
-                  disabled={!isValid || !dirty}
-                  color="secondary"
-                >
-                  Add
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </Form>
+            <Form method="post">
+              <Dialog open={open} onClose={handleDialog}>
+                <DialogTitle>{title}</DialogTitle>
+                <DialogContent style={{ width: "30rem" }}>
+                  <DialogContentText>{text}</DialogContentText>
+                  <TextField
+                    autoFocus
+                    margin="dense"
+                    label={label}
+                    type="text"
+                    fullWidth
+                    variant="outlined"
+                    id="name"
+                    onChange={handleChange}
+                    helperText={errors.name && dirty ? errors.name : ""}
+                    error={errors.name ? true : false}
+                    color="secondary"
+                    InputProps={{
+                      classes: { notchedOutline: "specialOutline" },
+                    }}
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={handleDialog}
+                    variant="outlined"
+                    className={"cancelButton"}
+                    color="secondary"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={() => createToDoList(userId, values.name)}
+                    variant="contained"
+                    disabled={!isValid || !dirty}
+                    color="secondary"
+                  >
+                    Add
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </Form>
           </ThemeProvider>
         );
       }}

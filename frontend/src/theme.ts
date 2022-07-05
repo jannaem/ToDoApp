@@ -9,13 +9,12 @@ const theme = createTheme({
     secondary: {
       main: "#408793",
     },
-    success:{
-      main:"#69CABC",
+    success: {
+      main: "#69CABC",
       contrastText: "#ffffff",
     },
     background: {
       default: "#8eecc980",
-      
     },
     action: {
       active: "#2F4858",
@@ -23,25 +22,24 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: ["Monospace"].join(","),
-    h1:{
-      color:"#69CABC",
-     
+    h1: {
+      color: "#69CABC",
     },
-    h3:{
-      color:"#69CABC",
-    }
+    h3: {
+      color: "#69CABC",
+    },
   },
-  components:{
+  components: {
     MuiInputBase: {
       styleOverrides: {
-          input: {
-            borderColor:"black",
-              '::before': {
-                  borderBottom:"#000",
-              }
-          }
-      }
-  }
-  }
+        input: {
+          borderColor: "black",
+          "::before": {
+            borderBottom: "#000",
+          },
+        },
+      },
+    },
+  },
 });
 export default theme;
