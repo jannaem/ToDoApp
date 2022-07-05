@@ -201,7 +201,11 @@ const ToDoPage = () => {
                 }
               >
                 <ListItemAvatar>
-                  <Avatar id={"avatar"}>{principal?.username.charAt(0).toUpperCase() +""+ principal?.username.charAt(1).toUpperCase()}</Avatar>
+                  <Avatar id={"avatar"}>
+                    {principal?.username.charAt(0).toUpperCase() +
+                      "" +
+                      principal?.username.charAt(1).toUpperCase()}
+                  </Avatar>
                 </ListItemAvatar>
                 <Typography component="h1" variant="h5" className={"text"}>
                   {principal?.username}
@@ -290,7 +294,7 @@ const ToDoPage = () => {
               className={"text"}
               style={{ margin: "-1.1rem" }}
             >
-              Todo{" "}
+              {selectedToDo.name}
             </Typography>
           </Grid>{" "}
           <Grid item md={1}>
