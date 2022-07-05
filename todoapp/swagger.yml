@@ -1,0 +1,101 @@
+swagger: '2.0'
+info:
+  description: Description of Prototype Rest API
+  version: '1.0'
+  title: Prototype Rest API
+  contact:
+    name: Blaser und Esteban
+host: 'localhost:8080'
+basePath: /
+tags:
+  - name: ToDoListController
+    description: Endpoint for CRUD-Operations with To do lists
+  - name: TaskController
+    description: Endpoint for CRUD-Operations with Tasks
+  - name: RoleController
+    description: Endpoint for CRUD-Operations with Roles
+  - name: UserController
+    description: Endpoint for CRUD-Operations with Users
+paths:
+  /list/user/{userId}:
+    get:
+      tags:
+        - ToDoListController
+      summary: Returns all lists with given id
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: int
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ToDoListDTO'
+        '403':
+          description: Forbidden
+      deprecated: false
+  '/list/{id}':
+    get:
+      tags:
+        - ToDoListController
+      summary: Returns a single list with given id
+      produces:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: int
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ToDoListDTO'
+        '404':
+          description: Not Found
+        '403':
+          description: Forbidden
+      deprecated: false
+  /list/{id}:
+    put:
+      tags:
+        - ToDoListController
+      summary: Returns updated list with given id
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ToDoListDTO'
+        '403':
+          description: FORBIDDEN
+        '404':
+          description: Not Found
+      deprecated: false
+  /list/{id}:
+    delete:
+      tags:
+        - ToDoListController
+      summary: Deletes list with given id
+      produces:
+        - application/jsom
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/UserDTO'
+        '403':
+          description: FORBIDDEN
+      deprecated: false

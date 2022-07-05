@@ -17,10 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tbz.project.todoapp.user.User;
 
-@RestController
+@Controller
 @RequestMapping(value = {"/task"})
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:8080")
 public class TaskController {
   private final TaskService taskService;
 

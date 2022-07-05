@@ -1,3 +1,6 @@
 #dialog {
   width: "100rem";
 }
+.specialOutline {
+  border-color: #408793 !important;
+}

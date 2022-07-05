@@ -1,3 +1,4 @@
+import { Buffer } from 'buffer';
 class B64Utility {
   /**
    * Encode a string as a base64 string

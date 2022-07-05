@@ -16,3 +16,8 @@
   font-family: monospace;
   font-weight: 300;
 }
+.svg_icons {
+  transform: scale(3);
+  margin-left: 23rem;
+  margin-top: 10rem;
+}

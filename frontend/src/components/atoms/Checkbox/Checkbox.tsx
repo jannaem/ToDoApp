@@ -7,7 +7,7 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import "./CheckboxStyle.css";
-import { Grid, IconButton } from "@material-ui/core";
+import { Grid, IconButton, ThemeProvider } from "@material-ui/core";
 import TaskService from "../../../services/TaskService";
 import Task from "../../../models/Task";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -15,6 +15,7 @@ import DeleteTaskDialog from "../Dialogs/DeleteTaskDialog";
 import EditIcon from "@mui/icons-material/Edit";
 import UpdateTaskDialog from "../Dialogs/UpdateTaskDialog";
 import SnackbarContext from "../../../contexts/SnackbarContext";
+import theme from "../../../theme";
 
 interface CheckBoxProps {
   task: Task;
@@ -43,14 +44,12 @@ const Checkbox = ({
       status: !checked,
     };
     TaskService.updateTask(task.id, updatedTask)
-      .then(() => {
-        displaySnackbarMessage("Task updated successfully", "success");
-      })
+      .then(() => {})
       .catch(() => displaySnackbarMessage("Task update failed", "error"));
   };
 
   return (
-    <>
+    <ThemeProvider theme={theme}>
       <Card id="card" variant="outlined">
         <CardContent>
           <Grid container>
@@ -58,6 +57,7 @@ const Checkbox = ({
               <FormControlLabel
                 control={
                   <MUICheckbox
+                    id={"updateState"}
                     icon={<CircleUnchecked />}
                     checkedIcon={<CircleCheckedFilled />}
                     checked={checked}
@@ -73,6 +73,7 @@ const Checkbox = ({
             </Grid>{" "}
             <Grid item xs={1} md={1}>
               <IconButton
+                id={"renameATask"}
                 style={{ color: "#408793", padding: "6px" }}
                 edge="end"
                 aria-label="delete"
@@ -85,6 +86,7 @@ const Checkbox = ({
             </Grid>
             <Grid item xs={1} md={1}>
               <IconButton
+                id={"deleteATask"}
                 style={{ color: "#408793", padding: "6px" }}
                 edge="end"
                 aria-label="delete"
@@ -111,7 +113,7 @@ const Checkbox = ({
         open={openUpdate}
         task={task}
       ></UpdateTaskDialog>
-    </>
+    </ThemeProvider>
   );
 };
 

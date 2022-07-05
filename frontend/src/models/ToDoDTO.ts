@@ -1,7 +1,7 @@
 import Task from "../models/Task";
 
 export interface ToDoDTO {
-  id: string;
+  toDoListId: string;
   name: string;
   tasks: Task[];
 }

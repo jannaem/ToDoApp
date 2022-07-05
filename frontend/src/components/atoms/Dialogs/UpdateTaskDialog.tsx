@@ -6,12 +6,14 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
+  ThemeProvider,
 } from "@material-ui/core";
 import { Form, Formik } from "formik";
 import { useContext } from "react";
 import SnackbarContext from "../../../contexts/SnackbarContext";
 import Task from "../../../models/Task";
 import TaskService from "../../../services/TaskService";
+import theme from "../../../theme";
 import { DialogFormValidation } from "../../Validation";
 import "./TaskDialog.css";
 
@@ -45,7 +47,7 @@ const UpdateTaskDialog = ({
       })
       .catch(() => displaySnackbarMessage("Task update failed", "error"));
   };
-
+  console.log(task, "task");
   return (
     <Formik
       enableReinitialize
@@ -55,24 +57,28 @@ const UpdateTaskDialog = ({
     >
       {({ values, handleChange, isValid, dirty, resetForm, errors }) => {
         return (
-          <Form method="post">
-            <>
+          <ThemeProvider theme={theme}>
+            <Form method="post">
               <Dialog open={open} onClose={handleDialog}>
                 <DialogTitle>{title}</DialogTitle>
                 <DialogContent style={{ width: "30rem" }}>
                   <DialogContentText>{text}</DialogContentText>
                   <TextField
+                    defaultValue={task.name}
                     required
                     autoFocus
                     margin="dense"
                     label={label}
                     type="text"
                     fullWidth
-                    variant="standard"
+                    variant="outlined"
                     id="name"
                     onChange={handleChange}
                     helperText={errors.name && dirty ? errors.name : ""}
                     error={errors.name ? true : false}
+                    InputProps={{
+                      classes: { notchedOutline: "specialOutline" },
+                    }}
                   />
                 </DialogContent>
                 <DialogActions>
@@ -82,6 +88,7 @@ const UpdateTaskDialog = ({
                       handleDialog();
                     }}
                     variant="outlined"
+                    color="secondary"
                   >
                     Cancel
                   </Button>
@@ -92,13 +99,14 @@ const UpdateTaskDialog = ({
                     }}
                     variant="contained"
                     disabled={!isValid || !dirty}
+                    color="secondary"
                   >
                     Update
                   </Button>
                 </DialogActions>
               </Dialog>
-            </>
-          </Form>
+            </Form>
+          </ThemeProvider>
         );
       }}
     </Formik>

@@ -5,11 +5,13 @@ import {
   DialogContentText,
   DialogActions,
   Button,
+  ThemeProvider,
 } from "@material-ui/core";
 import Task from "../../../models/Task";
 import TaskService from "../../../services/TaskService";
 import SnackbarContext from "../../../contexts/SnackbarContext";
 import { useContext } from "react";
+import theme from "../../../theme";
 
 interface DialogProps {
   handleDialog: () => void;
@@ -27,36 +29,38 @@ const DeleteTaskDialog = ({ open, handleDialog, task }: DialogProps) => {
       .catch(() => displaySnackbarMessage("Task deletion failed", "error"));
   };
   return (
-    <Dialog open={open} onClose={handleDialog}>
-      <DialogTitle>{"Confirm delete"}</DialogTitle>
-      <DialogContent style={{ width: "30rem" }}>
-        <DialogContentText>
-          {"Are you sure you want to delete the to do list: "}
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button
-          autoFocus
-          variant={"outlined"}
-          onClick={handleDialog}
-          color={"secondary"}
-          disabled={false}
-        >
-          cancel
-        </Button>
-        <Button
-          autoFocus
-          variant={"contained"}
-          onClick={() => {
-            deleteTask();
-          }}
-          color={"secondary"}
-          disabled={false}
-        >
-          delete
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <ThemeProvider theme={theme}>
+      <Dialog open={open} onClose={handleDialog}>
+        <DialogTitle>{"Confirm delete"}</DialogTitle>
+        <DialogContent style={{ width: "30rem" }}>
+          <DialogContentText>
+            {"Are you sure you want to delete the to do list: "}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            autoFocus
+            variant={"outlined"}
+            onClick={handleDialog}
+            color={"secondary"}
+            disabled={false}
+          >
+            cancel
+          </Button>
+          <Button
+            autoFocus
+            variant={"contained"}
+            onClick={() => {
+              deleteTask();
+            }}
+            color={"secondary"}
+            disabled={false}
+          >
+            delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </ThemeProvider>
   );
 };
 export default DeleteTaskDialog;

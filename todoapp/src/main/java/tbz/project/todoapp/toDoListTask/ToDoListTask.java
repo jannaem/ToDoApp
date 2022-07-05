@@ -25,10 +25,10 @@ import tbz.project.todoapp.toDoList.ToDoList;
 public class ToDoListTask {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private int id;
+  private int todoListTaskId;
 
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "id_list", referencedColumnName = "id")
+  @JoinColumn(name = "id_list", referencedColumnName = "toDoListId")
   private ToDoList list;
 
   @ManyToOne(fetch = FetchType.EAGER)

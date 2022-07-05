@@ -33,7 +33,7 @@ const ToDoList = ({
   handleUpdatedDialog,
 }: toDoListProps) => {
   const [selectedList, setSelectedList] = useState<ToDo>({
-    id: "",
+    toDoListId: "",
     name: "",
   });
   return (
@@ -42,7 +42,7 @@ const ToDoList = ({
         {toDos.map((toDo: ToDo) => (
           <ListItem
             disablePadding
-            key={toDo.id}
+            key={toDo.toDoListId}
             secondaryAction={
               <>
                 {deleteModus === true ? (
@@ -73,7 +73,7 @@ const ToDoList = ({
                 ) : null}
               </>
             }
-            className={selectedToDo.id === toDo.id ? "selectedToDo" : "toDo"}
+            className={selectedToDo.toDoListId === toDo.toDoListId ? "selectedToDo" : "toDo"}
           >
             <ListItemButton onClick={() => setSelectedToDo(toDo)}>
               <ListItemText primary={toDo.name} />

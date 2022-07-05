@@ -4,6 +4,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import javax.transaction.Transactional;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
@@ -15,10 +17,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import tbz.project.todoapp.role.Role;
 import tbz.project.todoapp.task.TaskRepository;
 import tbz.project.todoapp.task.TaskService;
 import tbz.project.todoapp.toDoList.ToDoList;
@@ -34,6 +38,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithMockUser(username = "jesteban", password = "esteban123", roles = {"USER"})
 public class ToDoListControllerTest {
   @Autowired
   private MockMvc mvc;
@@ -54,6 +59,7 @@ public class ToDoListControllerTest {
   @Test
   @Transactional
   @Sql("/TestData.sql")
+
   void createToDoList() throws Exception {
     //GIVEN
     JSONObject todoList = new JSONObject();
@@ -73,15 +79,28 @@ public class ToDoListControllerTest {
   @Sql("/TestData.sql")
   void updateToDoList() throws Exception {
     //GIVEN
+
     JSONObject todolist = new JSONObject();
-    todolist.put("id", 1);
+    todolist.put("toDoListId", 1);
     todolist.put("name", "passed");
+
+    JSONObject user = new JSONObject();
+    user.put("userId", 10);
+    user.put("firstName","test");
+    user.put("lastName","test");
+    user.put("email","test@gmail.com");
+    user.put("username","test");
+    user.put("password","$2a$10$FiqmJs.ytHcn3ajXdvKHT.4duVLIO4SC5tiPhYGGQ6ZSPZsfb9Gjy");
+    user.put("roles",new JSONArray());
+    todolist.put("user", user);
     //WHEN
     MvcResult res = mvc.perform(
         put("/list/{id}", 1).content(todolist.toString()).contentType(MediaType.APPLICATION_JSON))
         .andReturn();
     //THEN
     Assert.assertEquals(200, res.getResponse().getStatus());
+    System.out.println(String.valueOf(todolist)+ "expected");
+    System.out.println(res.getResponse().getContentAsString()+ "received");
     JSONAssert.assertEquals(String.valueOf(todolist), res.getResponse().getContentAsString(), JSONCompareMode.LENIENT);
   }
   @Test

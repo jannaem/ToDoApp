@@ -1,47 +1,36 @@
 package tbz.project.todoapp.user;
 
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import tbz.project.todoapp.role.Role;
 
 import java.util.List;
 
 @Controller
+@RequestMapping
 @RequiredArgsConstructor
-@RequestMapping(value = {"/user"})
 public class UserController {
     private final UserService userService;
 
-    @GetMapping
+    @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers() {
-        return ResponseEntity.ok().body(userService.getUsers());
+        return new ResponseEntity<>(userService.getUsers(), HttpStatus.OK);
     }
 
-    @PostMapping("/user")
-    public ResponseEntity<User> saveRole(@RequestBody User user) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveUser(user));
+    @GetMapping("/user/{username}")
+    public ResponseEntity<UserDTO> getUser(@PathVariable String username) {
+        return new ResponseEntity<>(userService.getUserDTO(username), HttpStatus.OK);
+    }
+    @PostMapping("/signUp")
+    public ResponseEntity<User> saveUser(@RequestBody UserDTO user) {
+        return new ResponseEntity<>(userService.saveUser(user), HttpStatus.CREATED);
     }
 
     @PostMapping("/role")
     public ResponseEntity<Role> saveRole(@RequestBody Role role) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.saveRole(role));
-    }
-
-    @PostMapping
-    public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserForm form) {
-        userService.addRoleToUser(form.getUsername(), form.getRoleName());
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-    @Data
-    class RoleToUserForm {
-        private String username;
-        private String roleName;
+        return new ResponseEntity<>(userService.saveRole(role), HttpStatus.CREATED);
     }
 }

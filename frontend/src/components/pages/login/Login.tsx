@@ -19,13 +19,14 @@ import { useNavigate } from "react-router-dom";
 import { FormModelLogin } from "../../../Model";
 import { useAuth } from "../../../contexts/AuthenticationContext";
 import SnackbarContext from "../../../contexts/SnackbarContext";
+import { LoginFormValidation } from "../../Validation";
 
 interface State {
   password: string;
   showPassword: boolean;
 }
 
-const LoginForm = () => {
+const Login = () => {
   const navigation = useNavigate();
   const { displaySnackbarMessage } = useContext(SnackbarContext);
   const { login } = useAuth();
@@ -50,24 +51,33 @@ const LoginForm = () => {
 
   const handleSubmit = ({ username, password }: FormikValues) => {
     login(username, password)
-      .then(() => {
-        navigation("/toDoApp");
-        displaySnackbarMessage("Login war erfolgreich!", "success");
-      })
-      .catch((error) => {
-        displaySnackbarMessage(error.response.data, "error");
-      });
+    .then(() => {
+      navigation("/toDoApp");
+      displaySnackbarMessage("Login succesfull", "success");
+    })
+    .catch(() => {  
+      displaySnackbarMessage("Login failed", "error");
+    });
   };
 
   return (
     <Formik
       initialValues={initialValues}
-      onSubmit={(values) => {
+      validationSchema={LoginFormValidation}
+      onSubmit={(values, { setSubmitting }) => {
         handleSubmit(values);
+        setTimeout(() => {
+          setSubmitting(false);
+        }, 1000);
       }}
     >
-      {({ values, errors, handleChange, isSubmitting }) => (
-        <Form>
+      {({ values,
+        errors,
+        handleChange,
+        touched,
+        isSubmitting,
+        handleBlur}) => (
+      <Form autoComplete="off">
           <Grid container className={"loginForm"}>
             <Paper variant={"elevation"} elevation={5} className={"form"}>
               <Grid item>
@@ -92,22 +102,27 @@ const LoginForm = () => {
                           </InputAdornment>
                         ),
                       }}
-                      {...(errors.username && { error: true })}
                       onChange={handleChange}
-                      helperText={errors.username}
+                      onBlur={handleBlur}
+                      helperText={errors.username && touched.username
+                        ? errors.username
+                        : null}
+                      error={errors.username && touched.username ? true : false}
                     />
                   </Grid>
                   <Grid item className="field">
                     <TextField
                       name="password"
+                      value={values.password}
                       fullWidth
                       required
                       type={pwdValues.showPassword ? "text" : "password"}
-                      value={values.password}
-                      {...(errors.password && { error: true })}
                       onChange={handleChange}
-                      helperText={errors.password}
-                      id="outlined-basic"
+                      onBlur={handleBlur}
+                      helperText={errors.password && touched.password
+                        ? errors.password
+                        : null}
+                      error={errors.password && touched.password ? true : false} 
                       label="Password"
                       InputProps={{
                         endAdornment: (
@@ -150,6 +165,7 @@ const LoginForm = () => {
                       variant={"contained"}
                       color={"secondary"}
                       disabled={isSubmitting}
+                      onClick={()=>navigation("/signup")}
                     >
                       create account
                     </Button>
@@ -163,4 +179,4 @@ const LoginForm = () => {
     </Formik>
   );
 };
-export default LoginForm;
+export default Login;
