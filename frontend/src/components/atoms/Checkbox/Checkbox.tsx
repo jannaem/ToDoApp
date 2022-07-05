@@ -44,9 +44,7 @@ const Checkbox = ({
       status: !checked,
     };
     TaskService.updateTask(task.id, updatedTask)
-      .then(() => {
-        displaySnackbarMessage("Task updated successfully", "success");
-      })
+      .then(() => {})
       .catch(() => displaySnackbarMessage("Task update failed", "error"));
   };
 
@@ -59,6 +57,7 @@ const Checkbox = ({
               <FormControlLabel
                 control={
                   <MUICheckbox
+                    id={"updateState"}
                     icon={<CircleUnchecked />}
                     checkedIcon={<CircleCheckedFilled />}
                     checked={checked}
@@ -74,6 +73,7 @@ const Checkbox = ({
             </Grid>{" "}
             <Grid item xs={1} md={1}>
               <IconButton
+                id={"renameATask"}
                 style={{ color: "#408793", padding: "6px" }}
                 edge="end"
                 aria-label="delete"
@@ -86,6 +86,7 @@ const Checkbox = ({
             </Grid>
             <Grid item xs={1} md={1}>
               <IconButton
+                id={"deleteATask"}
                 style={{ color: "#408793", padding: "6px" }}
                 edge="end"
                 aria-label="delete"
@@ -112,7 +113,7 @@ const Checkbox = ({
         open={openUpdate}
         task={task}
       ></UpdateTaskDialog>
-      </ThemeProvider>
+    </ThemeProvider>
   );
 };
 

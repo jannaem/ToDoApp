@@ -73,13 +73,13 @@ const AddTaskDialog = ({
                   <DialogContent style={{ width: "30rem" }}>
                     <DialogContentText>{text}</DialogContentText>
                     <TextField
-                    InputProps={{
-                      classes: {
-                         root: "textfield",
-                         disabled: "disabled",
-                         notchedOutline: "notchedOutline"
-                      }
-                   }}
+                      InputProps={{
+                        classes: {
+                          root: "textfield",
+                          disabled: "disabled",
+                          notchedOutline: "notchedOutline",
+                        },
+                      }}
                       color="secondary"
                       margin="dense"
                       label={label}
@@ -125,4 +125,3 @@ const AddTaskDialog = ({
   );
 };
 export default AddTaskDialog;
-

@@ -1,4 +1,10 @@
-import { Grid, IconButton, List, ListItemText } from "@material-ui/core";
+import {
+  Grid,
+  IconButton,
+  List,
+  ListItemText,
+  Typography,
+} from "@material-ui/core";
 import ListItem from "@mui/material/ListItem";
 import { Task } from "../../../models/Task";
 import "../TaskList/TaskListStyle.css";
@@ -22,9 +28,11 @@ const TaskList = ({
   return (
     <List id={"tasklist"}>
       <>
-        {" "}
-        {console.log(tasks.length)}
-        {tasks.length < 1 && "No tasks created yet."}
+        {tasks.length < 1 && (
+          <Typography align="center" style={{ margin: "2rem" }}>
+            No tasks created yet.
+          </Typography>
+        )}
         {tasks.map((task: Task) => (
           <ListItem id={"task"} disablePadding key={task.id}>
             <Grid item md={12} xs={12}>

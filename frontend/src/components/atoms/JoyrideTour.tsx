@@ -1,3 +1,4 @@
+import { SettingsRemoteSharp } from "@mui/icons-material";
 import React from "react";
 import Joyride, { CallBackProps, STATUS, Step } from "react-joyride";
 import theme from "../../theme";
@@ -24,6 +25,7 @@ type JoyrideTourProps = {
    * define if the skip-button should be available
    */
   showSkipButton?: boolean;
+  setSteps: (value: boolean) => void;
 };
 
 /**
@@ -35,12 +37,14 @@ const JoyrideTour = ({
   showSkipButton,
   setRun,
   steps = [],
+  setSteps,
 }: JoyrideTourProps) => {
   const handleJoyrideCallback = ({ status }: CallBackProps) => {
     // Define all statuses when the joyride should stop running.
     const stopStatuses: string[] = [STATUS.FINISHED, STATUS.SKIPPED];
     if (stopStatuses.includes(status)) {
       setRun(false);
+      setSteps(false);
     }
   };
 

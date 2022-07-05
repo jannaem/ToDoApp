@@ -33,8 +33,6 @@ const UpdateListDialog = ({
   setOpen,
   open,
 }: DialogProps) => {
-console.log("The tdod in update is ", list)
-
   const { displaySnackbarMessage } = useContext(SnackbarContext);
   const updateToDoList = (name: string) => {
     const updatedToDoList: ToDoDTO = {
