@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tbz.project.todoapp.role.Role;
 import tbz.project.todoapp.role.RoleRepository;
+import tbz.project.todoapp.toDoList.ToDoList;
+import tbz.project.todoapp.toDoList.ToDoListRepository;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,6 +22,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+
+    private final ToDoListRepository toDoListRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -46,6 +50,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setPassword(userDTO.getPassword());
         userRepository.save(user);
         addRoleToUser(user.getUsername(), "ROLE_USER");
+        ToDoList list = new ToDoList();
+        list.setName("Planned");
+        list.setUser(user);
+        toDoListRepository.save(list);
         return user;
     }
 
